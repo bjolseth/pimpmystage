@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sandbox</string>
+    <string name="welcome_text">Welcome to Sandbox</string>
+    <string name="context_card">Context card</string>
+    <string name="dragout_affordance">Drag here to remove from stage</string>
+
+</resources>

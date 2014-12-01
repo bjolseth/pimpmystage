@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="cisco_sansExtraLight">#FFFFFF</color>
+    <color name="headerBackground">#494949</color>
+    <color name="subHeaderbackground">#343434</color>
+    <color name="infoBackground">#292929</color>
+    <color name="infoFontColor">#999999</color>
+    <color name="settingsListItemBackground">#222222</color>
+    <color name="settingsListItemActivaBg">#00AFF5</color>
+    <color name="transparent">#00000000 </color>
+    <color name="setupWizard_red">#F05011</color>
+
+
+    <!-- Synergy 2.0 colors -->
+    <color name="syn2_white">#FFFFFFFF</color>
+    <color name="syn2_black">#FF000000</color>
+    <color name="syn2_green">#FF6EC92C</color>
+    <color name="syn2_highlight_blue">#FF00AFF5</color>
+    <color name="syn2_focus_blue">#FFB1E4FF</color>
+    <color name="syn2_steel_blue">#FF81ADFF</color>
+    <color name="syn2_slate_blue">#FF38637A</color>
+    <color name="syn2_purple">#FF514063</color>
+    <color name="syn2_orange">#F5B029</color>
+    <color name="syn2_red">#FFFC4926</color>
+    <color name="syn2_brick_red">#FFB51013</color>
+    <color name="syn2_peach">#FFFFEFDD</color>
+    <color name="syn2_darkGrey">#FF333333</color>
+    <color name="syn2_grey">#FF666666</color>
+    <color name="syn2_lightGrey">#FF999999</color>
+    <color name="syn2_paleGrey">#FFF7F7F7</color>
+
+    <color name="cisco_lightBlue">#FFE5EBF1</color>
+    <color name="cisco_washedOutGrey">#FFDEDEDE</color>
+    <color name="cisco_dimGrey">#FF2F2F2F</color>
+    <color name="cisco_skyBlue">#FFD8F0F7</color>
+    <color name="cisco_dodgerBlue">#FF1FACEF</color>
+    <color name="cisco_yellow">#FFFFE14F</color>
+    <color name="cisco_dividerGrey1">#FFCED4D6</color>
+    <color name="cisco_dividerGrey2">#FFF2EFED</color>
+
+    <!-- Shadow colors - these have some transparency baked in -->
+    <color name="highlightShadow">#80000000</color>
+    <color name="chiseledNormalShadow">#C0FFFFFF</color>
+    <color name="chiseledHeaderShadow">#60FFFFFF</color>
+    <color name="syn2_bluePressed">#C0A4D5F1</color>
+
+    <!-- Specialized colors -->
+    <color name="syn2_black_05">#0D000000</color>
+    <color name="syn2_black_10">#19000000</color>
+    <color name="syn2_black_20">#33000000</color>
+    <color name="syn2_black_40">#66000000</color>
+    <color name="syn2_black_50">#7F000000</color>
+
+    <color name="syn2_white_10">#19FFFFFF</color>
+    <color name="syn2_white_50">#7FFFFFFF</color>
+    <color name="syn2_white_75">#BFFFFFFF</color>
+    <color name="syn2_white_80">#CCFFFFFF</color>
+
+    <color name="syn2_grey_pip">#FF555555</color>
+
+    <color name="syn2_highlight_blue_5">#0c00AFF5</color>
+    <color name="syn2_highlight_blue_20">#3300AFF5</color>
+
+    <!-- Highlight colors -->
+    <color name="cisco_search_green">#FFB7F8AA</color>
+
+    <!-- Gradient colors -->
+    <color name="enabled_inner_shadow_start">#FF535555</color>
+    <color name="enabled_inner_shadow_end">#FF303334</color>
+    <color name="disabled_inner_shadow_start">#FFACACAC</color>
+    <color name="disabled_inner_shadow_end">#FFACACAC</color>
+
+    <color name="cisco_keypadPressGrey">#DFDFDF</color>
+    <color name="cisco_keypadBackgroundGrey">#E5E5E5</color>
+    <color name="cisco_keypadTextBlack">#666666</color>
+
+    <drawable name="syn2__highlight_blue_5">@color/syn2_highlight_blue_5</drawable>
+    <drawable name="syn2__highlight_blue_20">@color/syn2_highlight_blue_20</drawable>
+    <drawable name="syn2__highlight_blue">@color/syn2_highlight_blue</drawable>
+
+
+    <!-- taken from codec pairing app -->
+
+    <color name="ocp_background_color">#5f7a85</color>
+
+    <color name="oberon_white">#FFFFFFFF</color>
+    <color name="oberon_black">#000000</color>
+    <color name="oberon_grey">#CCCCCC</color>
+
+    <color name="oberon_gradient_start">#FF1C95DC</color>
+    <color name="oberon_gradient_end">@color/oberon_blue</color>
+    <color name="oberon_blue">#FF20AFF0</color>
+
+    <color name="oberon_listview_header_background">#FFF1F4F4</color>
+    <color name="oberon_listview_header_border">#FFE1E3E4</color>
+    <color name="oberon_listview_header_text">@color/oberon_text_dark</color>
+    <color name="oberon_listview_divider">#FFF1EFED</color>
+
+    <color name="oberon_spinner_button_text_active">#FF50575A</color>
+
+    <color name="oberon_section_divider">#FFDDDFE0</color>
+
+    <color name="oberon_text_shadow_dark">#60333333</color>
+    <color name="oberon_text_shadow_black">#60000000</color>
+    <color name="oberon_text_shadow_key">#ff000000</color>
+    <color name="oberon_text_shadow_light">#FFFFFFFF</color>
+
+    <color name="oberon_text_dark">#FF333333</color>
+    <color name="oberon_text_dark_disabled">#60333333</color>
+    <color name="oberon_text_medium">#FF666666</color>
+    <color name="oberon_text_medium_disabled">#60666666</color>
+    <color name="oberon_text_light">#FFFFFFFF</color>
+    <color name="oberon_text_light_disabled">#60FFFFFF</color>
+    <color name="oberon_text_hint">#FF869096</color>
+    <color name="oberon_text_mediumdark">#FF6B7274</color>
+    <color name="oberon_text_mediumdark_disabled">#606B7274</color>
+    <color name="oberon_text_keypad_alpha">#FF999999</color>
+
+    <color name="oberon_text_searchfield_hint">#999999</color>
+    <color name="oberon_text_search_text_hint">#999999</color>
+
+    <color name="oberon_key_gradient_top">#ff505050</color>
+    <color name="oberon_key_gradient_bottom">#ff272727</color>
+
+</resources>
