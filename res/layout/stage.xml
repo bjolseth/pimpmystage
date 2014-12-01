@@ -1,32 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<AbsoluteLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/stage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:background="#CCC"
         >
+    <com.cisco.telepresence.sandbox.stage.view.ScreenView
+            android:id="@+id/singlescreen"
+            android:layout_width="1067dp"
+            android:layout_height="600dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="100dp"
+            android:background="#F5F5F5"
 
-        <Button
-                android:id="@+id/frame1"
-                android:layout_width="300dp" android:layout_height="200dp"
-                android:layout_x="10dp"
-                android:layout_y="10dp"
-                android:background="#AAA"/>
+            />
 
-        <Button
-                android:id="@+id/frame2"
-                android:layout_width="300dp" android:layout_height="200dp"
-                android:layout_x="600dp"
-                android:layout_y="30dp"
-                android:background="#999"/>
-
-        <Button
-                android:id="@+id/marker"
-                android:layout_width="20dp" android:layout_height="20dp"
-                android:layout_x="600dp"
-                android:layout_y="400dp"
-                android:background="#900"/>
-</AbsoluteLayout>
+</RelativeLayout>

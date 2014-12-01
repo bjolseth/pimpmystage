@@ -2,11 +2,15 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsoluteLayout;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.model.Screen;
+import com.cisco.telepresence.sandbox.stage.view.FrameView;
+import com.cisco.telepresence.sandbox.stage.view.ScreenView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StageActivity extends Activity
 {
@@ -16,46 +20,34 @@ public class StageActivity extends Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stage);
-        addListeners();
+        createDummySetup();
     }
 
-    private void addListeners() {
-        findViewById(R.id.stage).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent e) {
-                Log.i(TAG, String.format("Click on stage location %f, %f ", e.getX(), e.getY()));
-                return false;
+    private void createDummySetup() {
+        Screen screen = new Screen();
+        Frame f1 = new Frame(Frame.FrameType.VIDEO, 4000, 4000, 0, 0, "Frame 1");
+        Frame f2 = new Frame(Frame.FrameType.VIDEO, 4000, 4000, 4000, 4000, "Frame 2");
+        List<Frame> frames = new ArrayList<Frame>();
+        frames.add(f1);
+        frames.add(f2);
+        screen.setFrames(frames);
+
+        ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
+        screenView.setScreen(screen);
+
+        screenView.invalidate();
+
+        ScaleFrameTouchListener stl = new ScaleFrameTouchListener(this);
+        setTouchListenerOnFrames(screenView, stl);
+    }
+
+
+    private void setTouchListenerOnFrames(ScreenView screenView, View.OnTouchListener touchListener) {
+        for (int i=0; i<screenView.getChildCount(); i++) {
+            View view = screenView.getChildAt(i);
+            if (view instanceof FrameView) {
+                view.setOnTouchListener(touchListener);
             }
-        });
-
-        findViewById(R.id.frame1).setOnTouchListener(new BoxTouchListener());
-        findViewById(R.id.frame2).setOnTouchListener(new BoxTouchListener());
-    }
-
-    private void repositionView(View view, int x, int y) {
-        AbsoluteLayout.LayoutParams p = new AbsoluteLayout.LayoutParams(view.getWidth(), view.getHeight(), x, y);
-        view.setLayoutParams(p);
-        Log.i(TAG, String.format("Moving view to %d, %d", x, y));
-    }
-
-    private class BoxTouchListener implements View.OnTouchListener {
-
-        @Override
-        public boolean onTouch(View view, MotionEvent e) {
-            int[] screenPos = {0, 0};
-
-            view.getLocationInWindow(screenPos);
-
-            int x = (int) e.getX(), y = (int) e.getY();
-
-            //View dummyView = findViewById(R.id.marker);
-            repositionView(view, screenPos[0] + x, screenPos[1] + y);
-
-//            Log.i(TAG, String.format("ontouch local (%d, %d) ", x, y));
-//            Log.i(TAG, String.format("ontouch screen (%d, %d) ", screenPos[0] + x, screenPos[1] + y));
-            return false;
         }
-
-    };
-
+    }
 }
