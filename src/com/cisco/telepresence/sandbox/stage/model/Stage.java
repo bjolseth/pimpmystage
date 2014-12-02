@@ -5,15 +5,13 @@ import java.util.List;
 
 public class Stage {
 
+    private List<Screen> screens = new ArrayList<Screen>();
+
     public List<Screen> getScreens() {
         return screens;
     }
-
     public void setScreens(List<Screen> screens) {
         this.screens = screens;
     }
-
-    private List<Screen> screens = new ArrayList<Screen>();
-
 
 }

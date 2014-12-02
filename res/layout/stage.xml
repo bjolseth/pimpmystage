@@ -8,6 +8,7 @@
         android:layout_height="match_parent"
         android:background="#CCC"
         >
+
     <com.cisco.telepresence.sandbox.stage.view.ScreenView
             android:id="@+id/singlescreen"
             android:layout_width="1067dp"
@@ -16,6 +17,15 @@
             android:layout_marginTop="100dp"
             android:background="#F5F5F5"
 
+            />
+
+    <TextView
+            android:id="@+id/debugLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/singlescreen"
+            android:layout_centerHorizontal="true"
+            android:textColor="#000"
             />
 
 </RelativeLayout>

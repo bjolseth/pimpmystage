@@ -27,31 +27,26 @@ public class ScreenView extends AbsoluteLayout {
     }
 
     public void setScreen(Screen screen) {
+
         float sx = getScaleWidth();
         float sy = getScaleHeight();
 
+        removeAllViews();
         for (Frame frame : screen.getFrames()) {
-            FrameView frameView = new FrameView(getContext());
-            int width = (int) (frame.getWidth() * sx);
-            int height = (int) (frame.getHeight() * sy);
-            int x = (int) (frame.getX() * sx);
-            int y = (int) (frame.getY() * sy);
-            LayoutParams layout = new LayoutParams(width, height, x, y);
-            frameView.setLayoutParams(layout);
-            frameView.setBackgroundColor(Color.GREEN);
+            FrameView frameView = new FrameView(getContext(), frame, sx, sy);
             addView(frameView);
-
-            Log.i(TAG, String.format("adding frame %d,%d,%d,%d", x, y, width, height));
         }
     }
 
-    private float getScaleWidth() {
+    public float getScaleWidth() {
         float factor = getLayoutParams().width / (float) LOGICAL_WIDTH;
+        Log.i(TAG, "scalex: " + factor);
         return factor;
     }
 
-    private float getScaleHeight() {
+    public float getScaleHeight() {
         float factor = getLayoutParams().height / (float) LOGICAL_HEIGHT;
+        Log.i(TAG, "scaley: " + factor);
         return factor;
     }
 
