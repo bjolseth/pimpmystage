@@ -22,30 +22,11 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
     private static final float GhostOpacity = 0.1f;
     private LayoutDirector layoutDirector;
 
-    public ScreenPresenter(ScreenView screenView) {
+    public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
         this.screenView = screenView;
-        layoutDirector = new ManualLayoutDirector(screenView);
-        createDummySetup();
-    }
-
-    private void createDummySetup() {
-        Screen screen = new Screen();
-        List<Frame> frames = new ArrayList<Frame>();
-
-        Frame f1 = new Frame(Frame.FrameType.VIDEO, 6000, 6000, 1000, 0, "Mr Jones");
-        frames.add(f1);
-
-        Frame f3 = new Frame(Frame.FrameType.LOCAL_PRESENTATATION, 3800, 3800, 2000, 6100, "PowerPoint");
-        frames.add(f3);
-
-        Frame f2 = new Frame(Frame.FrameType.SELFVIEW, 2000, 2000, 8000, 7000, "You");
-        frames.add(f2);
-
-        screen.setFrames(frames);
-        screenView.setScreen(screen);
-        screenView.invalidate();
-
+        this.layoutDirector = director;
         FrameTouchListener stl = new FrameTouchListener(screenView.getContext(), this);
+
         setTouchListenerOnFrames(screenView, stl);
     }
 

@@ -24,7 +24,6 @@ public class FrameView extends RelativeLayout {
         int y = (int) (frame.getY() * scaleY);
         AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(width, height, x, y);
         setLayoutParams(layout);
-
         View.inflate(context, R.layout.avatar, this);
         styleAvatar(frame.getFrameType(), frame.getName());
     }

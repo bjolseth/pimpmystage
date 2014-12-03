@@ -5,8 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
+import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
+import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StageActivity extends Activity
 {
@@ -20,10 +27,32 @@ public class StageActivity extends Activity
         debugView = (TextView) findViewById(R.id.debugLabel);
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
-        ScreenPresenter screenPresenter = new ScreenPresenter(screenView); //TODO
-
+        createManualDummySetup(screenView);
         debug("Pimp my stage started");
     }
+
+    private void createManualDummySetup(ScreenView screenView) {
+        LayoutDirector director = new ManualLayoutDirector(screenView);
+
+        Screen screen = new Screen();
+        List<Frame> frames = new ArrayList<Frame>();
+
+        Frame f1 = new Frame(Frame.FrameType.VIDEO, 6000, 6000, 1000, 0, "Mr Jones");
+        frames.add(f1);
+
+        Frame f3 = new Frame(Frame.FrameType.LOCAL_PRESENTATATION, 3800, 3800, 2000, 6100, "PowerPoint");
+        frames.add(f3);
+
+        Frame f2 = new Frame(Frame.FrameType.SELFVIEW, 2000, 2000, 8000, 7000, "You");
+        frames.add(f2);
+
+        screen.setFrames(frames);
+        screenView.setScreen(screen);
+//        screenView.invalidate();
+
+        ScreenPresenter screenPresenter = new ScreenPresenter(screenView, director);
+    }
+
 
     public static void debug(String msg) {
         Log.i(TAG, msg);

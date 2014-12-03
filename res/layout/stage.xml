@@ -6,7 +6,7 @@
         android:id="@+id/stage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#DDD"
+        android:background="#EEE"
         >
 
     <com.cisco.telepresence.sandbox.stage.view.ScreenView
