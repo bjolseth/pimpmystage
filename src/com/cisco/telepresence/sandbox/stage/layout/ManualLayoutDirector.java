@@ -2,6 +2,7 @@ package com.cisco.telepresence.sandbox.stage.layout;
 
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.View;
 import android.widget.AbsoluteLayout;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
@@ -16,15 +17,19 @@ public class ManualLayoutDirector implements LayoutDirector{
     }
 
     @Override
-    public void scaleCentered(FrameView view, float scale) {
-        view.scaleCentered(scale);
-        keepViewInsideScreen(view);
+    public void scaleView(View view, float scale) {
+        if (view instanceof FrameView) {
+            ((FrameView) view).scaleCentered(scale);
+            keepViewInsideScreen((FrameView) view);
+        }
     }
 
     @Override
-    public void moveView(FrameView view, int dx, int dy) {
-        view.move(dx, dy);
-        keepViewInsideScreen(view);
+    public void moveView(View view, int dx, int dy) {
+        if (view instanceof FrameView) {
+            ((FrameView) view).move(dx, dy);
+            keepViewInsideScreen((FrameView) view);
+        }
     }
 
     private void keepViewInsideScreen(FrameView view) {

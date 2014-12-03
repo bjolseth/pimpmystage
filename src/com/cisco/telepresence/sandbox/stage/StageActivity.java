@@ -44,7 +44,7 @@ public class StageActivity extends Activity
         Frame f1 = new Frame(Frame.FrameType.VIDEO, bigSize, bigSize, (max-bigSize)/2, 0, "Mr Prominent");
         frames.add(f1);
 
-        int numberOfPips = 2;
+        int numberOfPips = 1;
         int spacing = 50;
         int y = bigSize;
         int x = (max - (numberOfPips*smallSize))/2 - spacing*(numberOfPips-1);

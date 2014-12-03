@@ -1,9 +1,9 @@
 package com.cisco.telepresence.sandbox.stage.layout;
 
-import com.cisco.telepresence.sandbox.stage.view.FrameView;
+import android.view.View;
 
 public interface LayoutDirector
 {
-    public void scaleCentered(FrameView ghostView, float scale);
-    public void moveView(FrameView ghostView, int dx, int dy);
+    public void scaleView(View view, float scale);
+    public void moveView(View view, int dx, int dy);
 }

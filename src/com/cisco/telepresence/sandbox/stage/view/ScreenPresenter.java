@@ -1,17 +1,15 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.FrameTouchListener;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
-import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
-import com.cisco.telepresence.sandbox.stage.model.Frame;
-import com.cisco.telepresence.sandbox.stage.model.Screen;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
 
@@ -27,7 +25,8 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
         this.layoutDirector = director;
         FrameTouchListener stl = new FrameTouchListener(screenView.getContext(), this);
 
-        setTouchListenerOnFrames(screenView, stl);
+        //setTouchListenerOnAllFrames(screenView, stl);
+        screenView.setOnTouchListener(stl);
     }
 
     private void createGhostView(FrameView view) {
@@ -36,7 +35,7 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
         ghostView = clone;
     }
 
-    private void setTouchListenerOnFrames(ScreenView screenView, View.OnTouchListener touchListener) {
+    private void setTouchListenerOnAllFrames(ScreenView screenView, View.OnTouchListener touchListener) {
         for (int i=0; i<screenView.getChildCount(); i++) {
             View view = screenView.getChildAt(i);
             if (view instanceof FrameView) {
@@ -54,7 +53,11 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
             if (ghostView == null)
                 createGhostView(viewBeingTouched);
             viewBeingTouched.setAlpha(GhostOpacity);
-            layoutDirector.scaleCentered(ghostView, scale);
+            layoutDirector.scaleView(ghostView, scale);
+        }
+        else if (view instanceof ScreenView) {
+            Log.i(TAG, "Scale screen view");
+            layoutDirector.scaleView(screenView, scale);
         }
         StageActivity.debug(String.format("scaling %.2f", scale));
     }
