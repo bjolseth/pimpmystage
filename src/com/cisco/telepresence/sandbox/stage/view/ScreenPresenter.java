@@ -4,7 +4,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.FrameTouchListener;
+import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
+import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 
@@ -18,9 +20,11 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
     private FrameView ghostView;
     private FrameView viewBeingTouched;
     private static final float GhostOpacity = 0.1f;
+    private LayoutDirector layoutDirector;
 
     public ScreenPresenter(ScreenView screenView) {
         this.screenView = screenView;
+        layoutDirector = new ManualLayoutDirector(screenView);
         createDummySetup();
     }
 
@@ -66,7 +70,7 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
             if (ghostView == null)
                 createGhostView(viewBeingTouched);
             viewBeingTouched.setAlpha(GhostOpacity);
-            ghostView.scaleCentered(scale);
+            layoutDirector.scaleCentered(ghostView, scale);
         }
         StageActivity.debug(String.format("scaling %.2f", scale));
     }
@@ -91,7 +95,7 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
             if (ghostView == null)
                 createGhostView(viewBeingTouched);
             viewBeingTouched.setAlpha(GhostOpacity);
-            ghostView.move(dx, dy);
+            layoutDirector.moveView(ghostView, dx, dy);
         }
     }
 

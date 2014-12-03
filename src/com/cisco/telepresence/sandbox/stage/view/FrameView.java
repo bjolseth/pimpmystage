@@ -1,6 +1,7 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.widget.AbsoluteLayout;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 
@@ -36,9 +37,21 @@ public class FrameView extends AbsoluteLayout {
 
     public void move(int dx, int dy) {
         LayoutParams current = (LayoutParams) getLayoutParams();
-        LayoutParams layout = new LayoutParams(current.width, current.height, current.x + dx, current.y + dy);
+        setPos(current.x + dx, current.y + dy);
+    }
+
+    public void setPos(int x, int y) {
+        LayoutParams current = (LayoutParams) getLayoutParams();
+        LayoutParams layout = new LayoutParams(current.width, current.height, x, y);
         setLayoutParams(layout);
     }
+
+    public void setSize(int width, int height) {
+        LayoutParams current = (LayoutParams) getLayoutParams();
+        LayoutParams layout = new LayoutParams(width, height, current.x, current.y);
+        setLayoutParams(layout);
+    }
+
 
     public void scaleCentered(float scale) {
         LayoutParams current = (LayoutParams) getLayoutParams();
@@ -58,5 +71,11 @@ public class FrameView extends AbsoluteLayout {
         current.y = yCenter - (int) (current.height / 2.);
 
         setLayoutParams(current);
+    }
+
+    public Rect getBounds() {
+        int x = ((LayoutParams) getLayoutParams()).x;
+        int y = ((LayoutParams) getLayoutParams()).y;
+        return new Rect(x, y, x + getLayoutParams().width, y + getLayoutParams().height);
     }
 }
