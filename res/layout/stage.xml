@@ -6,17 +6,15 @@
         android:id="@+id/stage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CCC"
+        android:background="#DDD"
         >
 
     <com.cisco.telepresence.sandbox.stage.view.ScreenView
             android:id="@+id/singlescreen"
             android:layout_width="1067dp"
             android:layout_height="600dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="100dp"
             android:background="#F5F5F5"
-
+            android:layout_centerInParent="true"
             />
 
     <TextView

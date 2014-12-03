@@ -2,10 +2,15 @@ package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.View;
 import android.widget.AbsoluteLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 
-public class FrameView extends AbsoluteLayout {
+public class FrameView extends RelativeLayout {
 
     private final Frame frame;
 
@@ -17,14 +22,24 @@ public class FrameView extends AbsoluteLayout {
         int height = (int) (frame.getHeight() * scaleY);
         int x = (int) (frame.getX() * scaleX);
         int y = (int) (frame.getY() * scaleY);
-        LayoutParams layout = new LayoutParams(width, height, x, y);
+        AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(width, height, x, y);
         setLayoutParams(layout);
 
-        // TODO
-        if (frame.getFrameType() == Frame.FrameType.SELFVIEW)
-            setBackgroundColor(0x66000099);
-        else
-            setBackgroundColor(0x66009900);
+        View.inflate(context, R.layout.avatar, this);
+        styleAvatar(frame.getFrameType(), frame.getName());
+    }
+
+    private void styleAvatar(Frame.FrameType type, String name) {
+        ImageView img = (ImageView) findViewById(R.id.avatar_icon);
+        if (type == Frame.FrameType.SELFVIEW)
+            img.setImageResource(R.drawable.avatar_camera);
+        else if (type == Frame.FrameType.VIDEO)
+            img.setImageResource(R.drawable.avatar_single);
+        else if (type == Frame.FrameType.LOCAL_PRESENTATATION)
+            img.setImageResource(R.drawable.avatar_local_presentation);
+
+        TextView text = (TextView) findViewById(R.id.avatar_text);
+        text.setText(name);
     }
 
     // Cloned view that can be used to move and resize during gestures
@@ -36,25 +51,25 @@ public class FrameView extends AbsoluteLayout {
     }
 
     public void move(int dx, int dy) {
-        LayoutParams current = (LayoutParams) getLayoutParams();
+        AbsoluteLayout.LayoutParams current = (AbsoluteLayout.LayoutParams) getLayoutParams();
         setPos(current.x + dx, current.y + dy);
     }
 
     public void setPos(int x, int y) {
-        LayoutParams current = (LayoutParams) getLayoutParams();
-        LayoutParams layout = new LayoutParams(current.width, current.height, x, y);
+        AbsoluteLayout.LayoutParams current = (AbsoluteLayout.LayoutParams) getLayoutParams();
+        AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(current.width, current.height, x, y);
         setLayoutParams(layout);
     }
 
     public void setSize(int width, int height) {
-        LayoutParams current = (LayoutParams) getLayoutParams();
-        LayoutParams layout = new LayoutParams(width, height, current.x, current.y);
+        AbsoluteLayout.LayoutParams current = (AbsoluteLayout.LayoutParams) getLayoutParams();
+        AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(width, height, current.x, current.y);
         setLayoutParams(layout);
     }
 
 
     public void scaleCentered(float scale) {
-        LayoutParams current = (LayoutParams) getLayoutParams();
+        AbsoluteLayout.LayoutParams current = (AbsoluteLayout.LayoutParams) getLayoutParams();
 
         float aspect = 16.f/9.f;
 
@@ -74,8 +89,8 @@ public class FrameView extends AbsoluteLayout {
     }
 
     public Rect getBounds() {
-        int x = ((LayoutParams) getLayoutParams()).x;
-        int y = ((LayoutParams) getLayoutParams()).y;
+        int x = ((AbsoluteLayout.LayoutParams) getLayoutParams()).x;
+        int y = ((AbsoluteLayout.LayoutParams) getLayoutParams()).y;
         return new Rect(x, y, x + getLayoutParams().width, y + getLayoutParams().height);
     }
 }

@@ -32,10 +32,13 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
         Screen screen = new Screen();
         List<Frame> frames = new ArrayList<Frame>();
 
-        Frame f1 = new Frame(Frame.FrameType.VIDEO, 3000, 3000, 3500, 3500, "Frame 1");
+        Frame f1 = new Frame(Frame.FrameType.VIDEO, 6000, 6000, 1000, 0, "Mr Jones");
         frames.add(f1);
 
-        Frame f2 = new Frame(Frame.FrameType.SELFVIEW, 2000, 2000, 200, 200, "Frame 2");
+        Frame f3 = new Frame(Frame.FrameType.LOCAL_PRESENTATATION, 3800, 3800, 2000, 6100, "PowerPoint");
+        frames.add(f3);
+
+        Frame f2 = new Frame(Frame.FrameType.SELFVIEW, 2000, 2000, 8000, 7000, "You");
         frames.add(f2);
 
         screen.setFrames(frames);
