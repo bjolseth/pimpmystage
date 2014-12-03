@@ -86,6 +86,7 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
     @Override
     public void onDoubleTap(View view) {
         StageActivity.debug("Double tap view");
+        screenView.bringChildToFront(view);
     }
 
     @Override

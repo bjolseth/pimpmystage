@@ -67,6 +67,10 @@ public class FrameView extends RelativeLayout {
         setLayoutParams(layout);
     }
 
+    public void setBounds(Rect bounds) {
+        AbsoluteLayout.LayoutParams layout = new AbsoluteLayout.LayoutParams(bounds.width(), bounds.height(), bounds.left, bounds.top);
+        setLayoutParams(layout);
+    }
 
     public void scaleCentered(float scale) {
         AbsoluteLayout.LayoutParams current = (AbsoluteLayout.LayoutParams) getLayoutParams();
