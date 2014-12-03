@@ -1,22 +1,37 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.AbsoluteLayout;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 
 public class FrameView extends AbsoluteLayout {
 
+    private final Frame frame;
+
     public FrameView(Context context, Frame frame, float scaleX, float scaleY) {
         super(context);
+        this.frame = frame;
+
         int width = (int) (frame.getWidth() * scaleX);
         int height = (int) (frame.getHeight() * scaleY);
         int x = (int) (frame.getX() * scaleX);
         int y = (int) (frame.getY() * scaleY);
         LayoutParams layout = new LayoutParams(width, height, x, y);
         setLayoutParams(layout);
-        setBackgroundColor(0x66009900); // TODO
+
+        // TODO
+        if (frame.getFrameType() == Frame.FrameType.SELFVIEW)
+            setBackgroundColor(0x66000099);
+        else
+            setBackgroundColor(0x66009900);
+    }
+
+    // Cloned view that can be used to move and resize during gestures
+    // Original view can remain but be invisible, to avoid screwing up the coordinate system during change
+    public FrameView createClone(float scaleX, float scaleY) {
+        FrameView view = new FrameView(getContext(), frame, scaleX, scaleY);
+        view.setLayoutParams(this.getLayoutParams());
+        return view;
     }
 
     public void move(int dx, int dy) {

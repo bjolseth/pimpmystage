@@ -13,9 +13,11 @@ import java.util.List;
 
 public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
 
-    private Frame tmpFrame;
-    private FrameView tmpGhost;
+    private static final String TAG = "pimpmystage";
     private ScreenView screenView;
+    private FrameView ghostView;
+    private FrameView viewBeingTouched;
+    private static final float GhostOpacity = 0.1f;
 
     public ScreenPresenter(ScreenView screenView) {
         this.screenView = screenView;
@@ -24,26 +26,26 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
 
     private void createDummySetup() {
         Screen screen = new Screen();
-        Frame f1 = new Frame(Frame.FrameType.VIDEO, 3000, 3000, 3500, 3500, "Frame 1");
         List<Frame> frames = new ArrayList<Frame>();
+
+        Frame f1 = new Frame(Frame.FrameType.VIDEO, 3000, 3000, 3500, 3500, "Frame 1");
         frames.add(f1);
+
+        Frame f2 = new Frame(Frame.FrameType.SELFVIEW, 2000, 2000, 200, 200, "Frame 2");
+        frames.add(f2);
+
         screen.setFrames(frames);
-
         screenView.setScreen(screen);
-
         screenView.invalidate();
 
         FrameTouchListener stl = new FrameTouchListener(screenView.getContext(), this);
         setTouchListenerOnFrames(screenView, stl);
-
-        tmpFrame = f1;
-        createGhostFrameTemporarily();
     }
 
-
-    private void createGhostFrameTemporarily() {
-        tmpGhost = new FrameView(screenView.getContext(), tmpFrame, screenView.getScaleWidth(), screenView.getScaleHeight());
-        ((ViewGroup) screenView.findViewById(R.id.singlescreen)).addView(tmpGhost);
+    private void createGhostView(FrameView view) {
+        FrameView clone = view.createClone(screenView.getScaleWidth(), screenView.getScaleHeight());
+        ((ViewGroup) screenView.findViewById(R.id.singlescreen)).addView(clone);
+        ghostView = clone;
     }
 
     private void setTouchListenerOnFrames(ScreenView screenView, View.OnTouchListener touchListener) {
@@ -57,8 +59,16 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
 
     @Override
     public void onScaleView(View view, float scale) {
+
+        if (view instanceof FrameView) {
+            viewBeingTouched = (FrameView) view;
+            screenView.bringChildToFront(view);
+            if (ghostView == null)
+                createGhostView(viewBeingTouched);
+            viewBeingTouched.setAlpha(GhostOpacity);
+            ghostView.scaleCentered(scale);
+        }
         StageActivity.debug(String.format("scaling %.2f", scale));
-        tmpGhost.scaleCentered(scale);
     }
 
     @Override
@@ -74,12 +84,28 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
     @Override
     public void onMove(View view, int dx, int dy) {
         StageActivity.debug(String.format("Move %d, %d", dx, dy));
-        tmpGhost.move(dx, dy);
+
+        if (view instanceof FrameView) {
+            viewBeingTouched = (FrameView) view;
+            screenView.bringChildToFront(view);
+            if (ghostView == null)
+                createGhostView(viewBeingTouched);
+            viewBeingTouched.setAlpha(GhostOpacity);
+            ghostView.move(dx, dy);
+        }
     }
 
     @Override
     public void onEndTouch() {
-    }
+        if (ghostView != null && viewBeingTouched != null)
+            viewBeingTouched.setLayoutParams(ghostView.getLayoutParams());
 
+        if (viewBeingTouched != null)
+            viewBeingTouched.setAlpha(1f);
+
+        screenView.removeView(ghostView);
+        viewBeingTouched = null;
+        ghostView = null;
+    }
 
 }
