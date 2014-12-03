@@ -8,11 +8,15 @@ import android.widget.AbsoluteLayout;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ScreenView extends AbsoluteLayout {
 
     private final static int LOGICAL_WIDTH = 10000;
     private final static int LOGICAL_HEIGHT = LOGICAL_WIDTH;
     private final String TAG = "pimpmystage";
+    private List<FrameView> frames = new ArrayList<FrameView>();
 
     public ScreenView(Context context) {
         super(context);
@@ -35,8 +39,14 @@ public class ScreenView extends AbsoluteLayout {
         for (Frame frame : screen.getFrames()) {
             FrameView frameView = new FrameView(getContext(), frame, sx, sy);
             addView(frameView);
+            frames.add(frameView);
         }
     }
+
+    public List<FrameView> getFrameViews() {
+        return frames;
+    }
+
 
     public float getScaleWidth() {
         float factor = getLayoutParams().width / (float) LOGICAL_WIDTH;

@@ -24,6 +24,8 @@
             android:layout_below="@id/singlescreen"
             android:layout_centerHorizontal="true"
             android:textColor="#000"
+
+            android:visibility="invisible"
             />
 
 </RelativeLayout>

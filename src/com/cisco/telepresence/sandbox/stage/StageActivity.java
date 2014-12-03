@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
+import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
@@ -27,9 +28,38 @@ public class StageActivity extends Activity
         debugView = (TextView) findViewById(R.id.debugLabel);
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
-        createManualDummySetup(screenView);
+        createPredefineLayoutFamilySetup(screenView);
         debug("Pimp my stage started");
     }
+
+    private void createPredefineLayoutFamilySetup(ScreenView screenView) {
+        LayoutDirector director = new PredefineLayoutDirector(screenView);
+
+        Screen screen = new Screen();
+        List<Frame> frames = new ArrayList<Frame>();
+
+        int bigSize = 7000;
+        int max = 10000;
+        int smallSize = max - bigSize;
+        Frame f1 = new Frame(Frame.FrameType.VIDEO, bigSize, bigSize, (max-bigSize)/2, 0, "Mr Prominent");
+        frames.add(f1);
+
+        int numberOfPips = 2;
+        int spacing = 50;
+        int y = bigSize;
+        int x = (max - (numberOfPips*smallSize))/2 - spacing*(numberOfPips-1);
+        for (int i=0; i<numberOfPips; i++) {
+            Frame pip = new Frame(Frame.FrameType.VIDEO, smallSize - spacing*2, smallSize - spacing*2, x, y + spacing, "Pip " + (i+1));
+            x += smallSize + spacing;
+            frames.add(pip);
+        }
+
+        screen.setFrames(frames);
+        screenView.setScreen(screen);
+
+        new ScreenPresenter(screenView, director);
+    }
+
 
     private void createManualDummySetup(ScreenView screenView) {
         LayoutDirector director = new ManualLayoutDirector(screenView);
@@ -48,9 +78,8 @@ public class StageActivity extends Activity
 
         screen.setFrames(frames);
         screenView.setScreen(screen);
-//        screenView.invalidate();
 
-        ScreenPresenter screenPresenter = new ScreenPresenter(screenView, director);
+        new ScreenPresenter(screenView, director);
     }
 
 
