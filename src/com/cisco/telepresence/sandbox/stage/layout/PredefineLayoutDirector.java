@@ -56,9 +56,9 @@ public class PredefineLayoutDirector implements LayoutDirector{
         percent = Math.min(1, percent);
 
         if (frames.size() < 4)
-            percent = Math.max(0.45f, percent);
+            percent = Math.max(0.49f, percent);
         else
-            percent = Math.max(0.60f, percent);
+            percent = Math.max(0.65f, percent);
 
         currentBigPipPercent = percent;
         determineLayoutMode();
@@ -73,12 +73,23 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
     @Override
     public void scaleView(View view, float scale) {
-        scale = (float) Math.sqrt(scale); // Make scaling slower/less aggressive
+        //scale = (float) Math.sqrt(scale); // Make scaling slower/less aggressive
+
+        // Make
+        if (currentFamily == LayoutFamily.Equal && scale > 1) {
+            setMainView((FrameView) view);
+            setBigPipPercent(currentBigPipPercent * scale);
+            determineLayoutMode();
+        }
 
         // If we are making a small pip larger, make the main pip smaller (invert scaling)
-        if (view != getMainView())
-            scale = 1 / scale;
-        setBigPipPercent(currentBigPipPercent * scale);
+        else {
+            if (view != getMainView()) {
+                scale = 1 / scale;
+            }
+            setBigPipPercent(currentBigPipPercent * scale);
+        }
+
     }
 
     private void drawEqualMode(boolean animate) {
@@ -110,7 +121,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
     }
 
     private void drawOverlayMode() {
-        Log.i(TAG, "Scaling in overlay mode");
 
         FrameView prominentView = getMainView();
         int prominentHeight = (int) (screenView.getHeight() * currentBigPipPercent);
@@ -146,24 +156,25 @@ public class PredefineLayoutDirector implements LayoutDirector{
         if (frames.size() > 3)
             triggerEqual = 2/3.f;
 
-        if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent > TriggerPointOverlayPercent)
+        if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent > TriggerPointOverlayPercent) {
             switchLayoutFamily(LayoutFamily.Overlay);
-
-        else if (currentFamily == LayoutFamily.Overlay && currentBigPipPercent < TriggerPointOverlayPercent)
+            drawOverlayMode();
+        }
+        else if (currentFamily == LayoutFamily.Overlay && currentBigPipPercent < TriggerPointOverlayPercent) {
             switchLayoutFamily(LayoutFamily.Prominent);
-
+            drawProminentMode(true);
+        }
         else if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent < triggerEqual) {
             switchLayoutFamily(LayoutFamily.Equal);
             drawEqualMode(true);
         }
-
         else if (currentFamily == LayoutFamily.Equal && currentBigPipPercent > triggerEqual) {
             switchLayoutFamily(LayoutFamily.Prominent);
             drawProminentMode(true);
         }
     }
 
-    public void switchLayoutFamily(LayoutFamily layout) {
+    private void switchLayoutFamily(LayoutFamily layout) {
         currentFamily = layout;
     }
 
@@ -186,7 +197,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
         FrameView prominentView = getMainView();
         int prominentHeight = (int) (screenView.getHeight() * currentBigPipPercent);
-        StageActivity.debug("scaling " + currentBigPipPercent + " to height" + prominentHeight);
 
         // Prominent frame
         int prominentWidth = prominentHeight * 16/9;
@@ -215,8 +225,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
     @Override
     public void moveView(View view, int dx, int dy) {
-        // Don't allow currently, only resizing
-        //view.move(dx, dy);
+        // only swap views, don't move freely
     }
 
 }

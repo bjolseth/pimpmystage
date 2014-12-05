@@ -54,7 +54,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public void onScaleView(View view, float scale) {
         layoutDirector.scaleView(view, scale);
-        StageActivity.debug(String.format("scaling view " + view + " %.2f", scale));
     }
 
     @Override
