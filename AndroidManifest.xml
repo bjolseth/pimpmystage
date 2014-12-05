@@ -30,8 +30,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Experiment" />
-
     </application>
 
 </manifest>

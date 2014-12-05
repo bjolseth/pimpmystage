@@ -2,9 +2,6 @@
 <resources>
 
     <string name="app_name">Sandbox</string>
-    <string name="welcome_text">Welcome to Sandbox</string>
-    <string name="context_card">Context card</string>
-    <string name="dragout_affordance">Drag here to remove from stage</string>
     <string name="avatarname">Participant 1</string>
     <string name="garbagecan">Drag here to remove</string>
 

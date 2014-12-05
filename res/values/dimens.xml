@@ -1,33 +1,5 @@
 <resources>
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="button_width">235dp</dimen>
-    <dimen name="button_height">56dp</dimen>
-    <dimen name="input_width">372dp</dimen>
-    <dimen name="input_height">48dp</dimen>
-
-    <!-- FONTS -->
-    <dimen name="font_size_tiny">   12sp</dimen>
-    <dimen name="font_size_small">  16sp</dimen>
-    <dimen name="font_size_regular">22sp</dimen>
-    <dimen name="font_size_large">  28sp</dimen>
-    <dimen name="font_size_huge">   35sp</dimen>
-    <dimen name="font_size_small_config">15dp</dimen>
-
-    <dimen name="font_size_ccb_label">16dp</dimen>
-    <dimen name="font_size_tile_label">16dp</dimen>
-    <dimen name="font_size_searchfield">16dp</dimen>
-    <dimen name="font_size_tile_label_action_mode">22dp</dimen>
-    <dimen name="font_size_ccb_end">32dp</dimen>
-
-
-    <!-- FONTS specified in dp (not sp). Will not adjust to user's font size preference -->
-    <dimen name="font_size_tiny_fixed">   12dp</dimen>
-    <dimen name="font_size_small_fixed">  15dp</dimen>
-    <dimen name="font_size_regular_fixed">18dp</dimen>
-    <dimen name="font_size_large_fixed">  24dp</dimen>
-    <dimen name="font_size_huge_fixed">   35dp</dimen>
+    <dimen name="somesize">16dp</dimen>
 
 </resources>
