@@ -1,38 +1,32 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.R;
-import com.cisco.telepresence.sandbox.stage.FrameTouchListener;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
+import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.util.FrameDragBuilder;
+import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
 
-public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
+public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, View.OnDragListener {
 
     private static final String TAG = "pimpmystage";
     private ScreenView screenView;
-    private FrameView ghostView;
-    private FrameView viewBeingTouched;
-    private static final float GhostOpacity = 0.1f;
     private LayoutDirector layoutDirector;
+    private View viewBeingDragged;
 
     public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
         this.screenView = screenView;
         this.layoutDirector = director;
-        FrameTouchListener stl = new FrameTouchListener(screenView.getContext(), this);
 
-        //setTouchListenerOnAllFrames(screenView, stl);
-        screenView.setOnTouchListener(stl);
-    }
-
-    private void createGhostView(FrameView view) {
-        FrameView clone = view.createClone(screenView.getScaleWidth(), screenView.getScaleHeight());
-        ((ViewGroup) screenView.findViewById(R.id.singlescreen)).addView(clone);
-        ghostView = clone;
+        MultiTouchListener multiTouchListener = new MultiTouchListener(screenView.getContext(), this);
+        screenView.setOnTouchListener(multiTouchListener);
+        setTouchListenerOnAllFrames(screenView, multiTouchListener);
+        setDragListenerOnAllFrames(screenView, this);
     }
 
     private void setTouchListenerOnAllFrames(ScreenView screenView, View.OnTouchListener touchListener) {
@@ -44,22 +38,19 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
         }
     }
 
+    private void setDragListenerOnAllFrames(ScreenView screenView, View.OnDragListener dragListener) {
+        for (int i=0; i<screenView.getChildCount(); i++) {
+            View view = screenView.getChildAt(i);
+            if (view instanceof FrameView) {
+                view.setOnDragListener(dragListener);
+            }
+        }
+    }
+
     @Override
     public void onScaleView(View view, float scale) {
-
-        if (view instanceof FrameView) {
-            viewBeingTouched = (FrameView) view;
-            screenView.bringChildToFront(view);
-            if (ghostView == null)
-                createGhostView(viewBeingTouched);
-            viewBeingTouched.setAlpha(GhostOpacity);
-            layoutDirector.scaleView(ghostView, scale);
-        }
-        else if (view instanceof ScreenView) {
-            Log.i(TAG, "Scale screen view");
-            layoutDirector.scaleView(screenView, scale);
-        }
-        StageActivity.debug(String.format("scaling %.2f", scale));
+        layoutDirector.scaleView(view, scale);
+        StageActivity.debug(String.format("scaling view " + view + " %.2f", scale));
     }
 
     @Override
@@ -70,34 +61,34 @@ public class ScreenPresenter implements FrameTouchListener.FrameTouchCallback {
     @Override
     public void onDoubleTap(View view) {
         StageActivity.debug("Double tap view");
-        screenView.bringChildToFront(view);
     }
 
     @Override
-    public void onMove(View view, int dx, int dy) {
-        StageActivity.debug(String.format("Move %d, %d", dx, dy));
-
-        if (view instanceof FrameView) {
-            viewBeingTouched = (FrameView) view;
-            screenView.bringChildToFront(view);
-            if (ghostView == null)
-                createGhostView(viewBeingTouched);
-            viewBeingTouched.setAlpha(GhostOpacity);
-            layoutDirector.moveView(ghostView, dx, dy);
-        }
+    public void onLongPress(View view) {
+        StageActivity.debug(String.format("long press view " + view));
+        viewBeingDragged = view;
+        View.DragShadowBuilder shadow = new FrameDragBuilder(view);
+        view.startDrag(null, shadow, null, 0);
     }
 
     @Override
     public void onEndTouch() {
-        if (ghostView != null && viewBeingTouched != null)
-            viewBeingTouched.setLayoutParams(ghostView.getLayoutParams());
-
-        if (viewBeingTouched != null)
-            viewBeingTouched.setAlpha(1f);
-
-        screenView.removeView(ghostView);
-        viewBeingTouched = null;
-        ghostView = null;
     }
 
+    @Override
+    public boolean onDrag(View view, DragEvent dragEvent) {
+        int action = dragEvent.getAction();
+        if (action == DragEvent.ACTION_DROP) {
+            StageActivity.debug("Drop view " + viewBeingDragged + " on " + view);
+            swapPositionAndSize(viewBeingDragged, view);
+        }
+        return true;
+    }
+
+    private void swapPositionAndSize(View viewBeingDragged, View view) {
+        ViewGroup.LayoutParams p1 = viewBeingDragged.getLayoutParams();
+        ViewGroup.LayoutParams p2 = view.getLayoutParams();
+        viewBeingDragged.setLayoutParams(p2);
+        view.setLayoutParams(p1);
+    }
 }

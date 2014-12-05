@@ -96,4 +96,8 @@ public class FrameView extends RelativeLayout {
         int y = ((AbsoluteLayout.LayoutParams) getLayoutParams()).y;
         return new Rect(x, y, x + getLayoutParams().width, y + getLayoutParams().height);
     }
+
+    public String toString() {
+        return String.format("Frame %s", frame.getName());
+    }
 }

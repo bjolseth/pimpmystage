@@ -30,8 +30,12 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
     @Override
     public void scaleView(View view, float scale) {
-        if (! (view  instanceof ScreenView))
-            return;
+
+        // If we are making a small pip larger, make the main pip smaller (invert scaling)
+        if (view != screenView.getFrameViews().get(0))
+//        if ((float) view.getLayoutParams().height / screenView.getLayoutParams().height < 0.5)
+            scale = 1 / scale;
+
 
         scale = (float) Math.sqrt(scale); // make scaling less aggressive
         if (currentFamily == LayoutFamily.Prominent)

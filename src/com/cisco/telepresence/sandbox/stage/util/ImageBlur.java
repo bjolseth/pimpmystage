@@ -9,7 +9,8 @@ import android.renderscript.ScriptIntrinsicBlur;
 
 // Copied from https://plus.google.com/+MarioViviani/posts/fhuzYkji9zz
 public class ImageBlur {
-    public Bitmap blurBitmap(Context context, Bitmap bitmap) {
+
+    public static Bitmap blurBitmap(Context context, Bitmap bitmap) {
 
 
     //Let's create an empty bitmap with the same size of the bitmap we want to blur
