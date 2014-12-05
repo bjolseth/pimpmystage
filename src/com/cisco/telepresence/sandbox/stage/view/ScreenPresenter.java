@@ -1,5 +1,8 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -8,6 +11,7 @@ import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.util.Animations;
 import com.cisco.telepresence.sandbox.stage.util.FrameDragBuilder;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
@@ -80,15 +84,17 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         int action = dragEvent.getAction();
         if (action == DragEvent.ACTION_DROP) {
             StageActivity.debug("Drop view " + viewBeingDragged + " on " + view);
-            swapPositionAndSize(viewBeingDragged, view);
+            if (view instanceof FrameView && viewBeingDragged instanceof FrameView)
+            swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) view);
         }
         return true;
     }
 
-    private void swapPositionAndSize(View viewBeingDragged, View view) {
-        ViewGroup.LayoutParams p1 = viewBeingDragged.getLayoutParams();
-        ViewGroup.LayoutParams p2 = view.getLayoutParams();
-        viewBeingDragged.setLayoutParams(p2);
-        view.setLayoutParams(p1);
+    private void swapPositionAndSize(FrameView view1, FrameView view2) {
+        Rect bounds1 = view1.getBounds();
+        Rect bounds2 = view2.getBounds();
+
+        Animations.animateFrame(view1, bounds2);
+        Animations.animateFrame(view2, bounds1);
     }
 }
