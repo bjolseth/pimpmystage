@@ -13,7 +13,7 @@ public class MultiTouchListener implements View.OnTouchListener, GestureDetector
     private final GestureDetector simpleTouchdetector;
     private View currentView;
     private final MultiTouchCallback callback;
-    private final int LONGPRESS_TIMEOUT = 200;
+    private final int LONGPRESS_TIMEOUT = 250;
 
     // Need our own, since the one from the gesturelistener doesn't respect changing the android longpress timeout
     private Handler longPressHandler = new Handler();

@@ -3,6 +3,7 @@ package com.cisco.telepresence.sandbox.stage;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
@@ -20,6 +21,7 @@ public class StageActivity extends Activity
 {
     private static final String TAG = "pimpmystage";
     private static TextView debugView;
+    private PredefineLayoutDirector layoutDirector;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,11 +31,29 @@ public class StageActivity extends Activity
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
         createPredefineLayoutFamilySetup(screenView);
+        setupLayoutSlider();
         debug("Pimp my stage started");
     }
 
+    private void setupLayoutSlider() {
+        ((SeekBar) findViewById(R.id.layoutslider)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
+                layoutDirector.setBigPipPercent((50 + value)/100.f);
+                debug("Layout slider value: " + value);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+    }
+
+
     private void createPredefineLayoutFamilySetup(ScreenView screenView) {
-        LayoutDirector director = new PredefineLayoutDirector(screenView);
+        layoutDirector = new PredefineLayoutDirector(screenView);
 
         Screen screen = new Screen();
         List<Frame> frames = new ArrayList<Frame>();
@@ -44,7 +64,7 @@ public class StageActivity extends Activity
         Frame f1 = new Frame(Frame.FrameType.VIDEO, bigSize, bigSize, (max-bigSize)/2, 0, "Mr Prominent");
         frames.add(f1);
 
-        int numberOfPips = 1;
+        int numberOfPips = 3;
         int spacing = 50;
         int y = bigSize;
         int x = (max - (numberOfPips*smallSize))/2 - spacing*(numberOfPips-1);
@@ -57,7 +77,7 @@ public class StageActivity extends Activity
         screen.setFrames(frames);
         screenView.setScreen(screen);
 
-        new ScreenPresenter(screenView, director);
+        new ScreenPresenter(screenView, layoutDirector);
     }
 
 

@@ -17,14 +17,23 @@
             android:layout_centerInParent="true"
             />
 
+    <SeekBar
+            android:id="@+id/layoutslider"
+            android:layout_width="1067dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/singlescreen"
+            android:layout_centerHorizontal="true"
+            android:max="50"
+            android:progress="20"
+    />
+
     <TextView
             android:id="@+id/debugLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/singlescreen"
+            android:layout_below="@id/layoutslider"
             android:layout_centerHorizontal="true"
             android:textColor="#000"
-
             />
 
 </RelativeLayout>
