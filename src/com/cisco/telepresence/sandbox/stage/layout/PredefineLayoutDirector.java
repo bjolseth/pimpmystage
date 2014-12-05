@@ -43,6 +43,13 @@ public class PredefineLayoutDirector implements LayoutDirector{
     }
 
     public void setBigPipPercent(float percent) {
+        percent = Math.min(1, percent);
+
+        if (frames.size() < 4)
+            percent = Math.max(0.45f, percent);
+        else
+            percent = Math.max(0.60f, percent);
+
         currentBigPipPercent = percent;
         determineLayoutMode();
 
@@ -56,11 +63,12 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
     @Override
     public void scaleView(View view, float scale) {
+        scale = (float) Math.sqrt(scale); // Make scaling slower/less aggressive
 
-//        // If we are making a small pip larger, make the main pip smaller (invert scaling)
-//        if (view != screenView.getFrameViews().get(0))
-////        if ((float) view.getLayoutParams().height / screenView.getLayoutParams().height < 0.5)
-//            scale = 1 / scale;
+        // If we are making a small pip larger, make the main pip smaller (invert scaling)
+        if (view != getMainView())
+            scale = 1 / scale;
+        setBigPipPercent(currentBigPipPercent * scale);
     }
 
     private void drawEqualMode(boolean animate) {
