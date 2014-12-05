@@ -11,11 +11,12 @@ import android.view.View;
 public class FrameDragBuilder extends View.DragShadowBuilder {
 
     private Drawable shadow;
-
+    private View view;
 
     public FrameDragBuilder(View v) {
         super(v);
-        shadow = new ColorDrawable(0x33999999);
+        this.view = v;
+        //shadow = new ColorDrawable(0x33999999);
     }
 
     @Override
@@ -42,6 +43,6 @@ public class FrameDragBuilder extends View.DragShadowBuilder {
     public void onDrawShadow(Canvas canvas) {
 
         // Draws the ColorDrawable in the Canvas passed in from the system.
-        shadow.draw(canvas);
+        view.draw(canvas);
     }
 }

@@ -28,7 +28,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         this.layoutDirector = director;
 
         MultiTouchListener multiTouchListener = new MultiTouchListener(screenView.getContext(), this);
-        screenView.setOnTouchListener(multiTouchListener);
         setTouchListenerOnAllFrames(screenView, multiTouchListener);
         setDragListenerOnAllFrames(screenView, this);
     }
@@ -71,7 +70,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     public void onLongPress(View view) {
         StageActivity.debug(String.format("long press view " + view));
         viewBeingDragged = view;
-        View.DragShadowBuilder shadow = new FrameDragBuilder(view);
+        View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
         view.startDrag(null, shadow, null, 0);
     }
 
@@ -85,7 +84,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         if (action == DragEvent.ACTION_DROP) {
             StageActivity.debug("Drop view " + viewBeingDragged + " on " + view);
             if (view instanceof FrameView && viewBeingDragged instanceof FrameView)
-            swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) view);
+                swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) view);
         }
         return true;
     }
