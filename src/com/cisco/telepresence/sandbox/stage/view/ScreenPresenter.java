@@ -85,16 +85,9 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         if (action == DragEvent.ACTION_DROP) {
             StageActivity.debug("Drop view " + viewBeingDragged + " on " + view);
             if (view instanceof FrameView && viewBeingDragged instanceof FrameView)
-                swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) view);
+                layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) view);
         }
         return true;
     }
 
-    private void swapPositionAndSize(FrameView view1, FrameView view2) {
-        Rect bounds1 = view1.getBounds();
-        Rect bounds2 = view2.getBounds();
-
-        Animations.animateFrame(view1, bounds2);
-        Animations.animateFrame(view2, bounds1);
-    }
 }

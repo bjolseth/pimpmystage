@@ -3,6 +3,7 @@ package com.cisco.telepresence.sandbox.stage.layout;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
@@ -40,6 +41,15 @@ public class PredefineLayoutDirector implements LayoutDirector{
     private void setMainView(FrameView view) {
         frames.remove(view);
         frames.add(0, view);
+        sendViewToBack(view);
+    }
+
+    public static void sendViewToBack(final View child) {
+        final ViewGroup parent = (ViewGroup) child.getParent();
+        if (null != parent) {
+            parent.removeView(child);
+            parent.addView(child, 0);
+        }
     }
 
     public void setBigPipPercent(float percent) {
@@ -132,7 +142,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
     }
 
     private void determineLayoutMode() {
-
         float triggerEqual = TriggerPointEqualPercent;
         if (frames.size() > 3)
             triggerEqual = 2/3.f;
@@ -152,12 +161,26 @@ public class PredefineLayoutDirector implements LayoutDirector{
             switchLayoutFamily(LayoutFamily.Prominent);
             drawProminentMode(true);
         }
-
     }
 
     public void switchLayoutFamily(LayoutFamily layout) {
         currentFamily = layout;
     }
+
+    @Override
+    public void swapPositionAndSize(FrameView view1, FrameView view2) {
+        if (view1 == getMainView())
+            setMainView(view2);
+        else if (view2 == getMainView())
+            setMainView(view1);
+
+        Rect bounds1 = view1.getBounds();
+        Rect bounds2 = view2.getBounds();
+
+        Animations.animateFrame(view1, bounds2);
+        Animations.animateFrame(view2, bounds1);
+    }
+
 
     private void drawProminentMode(boolean animated) {
 

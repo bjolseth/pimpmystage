@@ -32,6 +32,10 @@ public class ManualLayoutDirector implements LayoutDirector{
         }
     }
 
+    @Override
+    public void swapPositionAndSize(FrameView view1, FrameView view2) {
+    }
+
     private void keepViewInsideScreen(FrameView view) {
         Rect bounds = view.getBounds();
 
