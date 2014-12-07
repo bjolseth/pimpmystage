@@ -23,15 +23,15 @@ public class ManualLayoutDirector implements LayoutDirector {
         }
     }
 
-    @Override
-    public void moveView(View view, int x, int y) {
+    public void moveView0(View view, int x, int y) {
         if (view instanceof FrameView) {
             ((FrameView) view).setPos(x, y);
             keepViewInsideScreen((FrameView) view);
         }
     }
 
-    private void moveViewDelta(View view, int dx, int dy) {
+    @Override
+    public void moveView(View view, int dx, int dy) {
         if (view instanceof FrameView) {
             ((FrameView) view).move(dx, dy);
             keepViewInsideScreen((FrameView) view);

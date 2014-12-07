@@ -3,7 +3,6 @@ package com.cisco.telepresence.sandbox.stage.view;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
-import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
@@ -15,6 +14,8 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     private ScreenView screenView;
     private LayoutDirector layoutDirector;
     private View viewBeingDragged;
+    boolean isCurrentlyInDragMode = false;
+    int dragStartX, dragStartY;
 
     public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
         this.screenView = screenView;
@@ -75,18 +76,27 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     public void onEndTouch() {
     }
 
+
     @Override
     public boolean onDrag(View dropZoneView, DragEvent dragEvent) {
         int action = dragEvent.getAction();
         if (action == DragEvent.ACTION_DROP) {
-            StageActivity.debug("Drop dropZoneView " + viewBeingDragged + " on " + dropZoneView);
 
             if (dropZoneView instanceof FrameView && viewBeingDragged instanceof FrameView)
                 layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) dropZoneView);
 
             else if (dropZoneView instanceof ScreenView && viewBeingDragged instanceof FrameView) {
-               StageActivity.debug("move frame " + viewBeingDragged + " manually to " + dragEvent.getX() + "," + dragEvent.getY());
-                layoutDirector.moveView(viewBeingDragged, (int) dragEvent.getX(), (int) dragEvent.getY());
+                int dx = (int) dragEvent.getX() - dragStartX;
+                int dy = (int) dragEvent.getY() - dragStartY;
+                layoutDirector.moveView(viewBeingDragged, dx, dy);
+                isCurrentlyInDragMode = false;
+            }
+        }
+        else if (action == DragEvent.ACTION_DRAG_LOCATION) {
+            if (! isCurrentlyInDragMode) {
+                isCurrentlyInDragMode = true;
+                dragStartX = (int) dragEvent.getX();
+                dragStartY = (int) dragEvent.getY();
             }
         }
         return true;
