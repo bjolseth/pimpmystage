@@ -73,7 +73,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
     @Override
     public void scaleView(View view, float scale) {
-        //scale = (float) Math.sqrt(scale); // Make scaling slower/less aggressive
+        scale = (float) Math.sqrt(scale); // Make scaling slower/less aggressive
 
         // Make
         if (currentFamily == LayoutFamily.Equal && scale > 1) {
@@ -151,24 +151,34 @@ public class PredefineLayoutDirector implements LayoutDirector{
         }
     }
 
+    private void stopAnimations() {
+        for (FrameView view : frames) {
+            view.clearAnimation();
+        }
+    }
+
     private void determineLayoutMode() {
         float triggerEqual = TriggerPointEqualPercent;
         if (frames.size() > 3)
             triggerEqual = 2/3.f;
 
         if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent > TriggerPointOverlayPercent) {
+            stopAnimations();
             switchLayoutFamily(LayoutFamily.Overlay);
             drawOverlayMode();
         }
         else if (currentFamily == LayoutFamily.Overlay && currentBigPipPercent < TriggerPointOverlayPercent) {
+            stopAnimations();
             switchLayoutFamily(LayoutFamily.Prominent);
             drawProminentMode(true);
         }
         else if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent < triggerEqual) {
+            stopAnimations();
             switchLayoutFamily(LayoutFamily.Equal);
             drawEqualMode(true);
         }
         else if (currentFamily == LayoutFamily.Equal && currentBigPipPercent > triggerEqual) {
+            stopAnimations();
             switchLayoutFamily(LayoutFamily.Prominent);
             drawProminentMode(true);
         }

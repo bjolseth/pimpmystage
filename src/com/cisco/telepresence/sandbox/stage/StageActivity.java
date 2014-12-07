@@ -2,17 +2,22 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import com.cisco.telepresence.sandbox.CodecInterface;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
+import com.cisco.telepresence.sandbox.stage.model.Call;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
+import com.cisco.telepresence.system.ServiceProvider;
+import com.cisco.telepresence.system.SystemAIDLService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +37,33 @@ public class StageActivity extends Activity
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
         createPredefineLayoutFamilySetup(screenView);
         setupLayoutSlider();
-        debug("Pimp my stage started");
+
+    }
+
+    private void buildFramesBasedOnCalls() {
+        CodecInterface codec = new CodecInterface();
+        int layoutId = 1;
+        int monitorOutput = 1;
+        codec.createCustomLayout(layoutId);
+        sleep(1000);
+
+        int i = 0;
+        for (Call call : codec.getCalls()) {
+            Log.i(TAG, call.toString());
+            codec.createCustomVideoFrame(layoutId, call.getCallId(), i+1, i*5000, i*5000, 5000, 5000, i+1);
+            sleep(1000);
+            i++;
+        }
+
+        codec.assignCustomLayoutToOutput(layoutId, monitorOutput);
+    }
+
+    private void sleep(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupLayoutSlider() {
