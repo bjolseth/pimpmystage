@@ -25,6 +25,7 @@
             android:layout_centerHorizontal="true"
             android:max="50"
             android:progress="20"
+            android:visibility="gone"
     />
 
     <TextView

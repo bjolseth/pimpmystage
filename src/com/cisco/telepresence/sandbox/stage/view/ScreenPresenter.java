@@ -1,19 +1,11 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SeekBar;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
-import com.cisco.telepresence.sandbox.stage.model.Frame;
-import com.cisco.telepresence.sandbox.stage.util.Animations;
-import com.cisco.telepresence.sandbox.stage.util.FrameDragBuilder;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
 
@@ -30,7 +22,12 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
         MultiTouchListener multiTouchListener = new MultiTouchListener(screenView.getContext(), this);
         setTouchListenerOnAllFrames(screenView, multiTouchListener);
-        setDragListenerOnAllFrames(screenView, this);
+        //setDragListenerOnAllFrames(screenView, this);
+        setManualDragListenerOnScreenView(screenView, this);
+    }
+
+    private void setManualDragListenerOnScreenView(ScreenView screenView, ScreenPresenter screenPresenter) {
+        screenView.setOnDragListener(this);
     }
 
     private void setTouchListenerOnAllFrames(ScreenView screenView, View.OnTouchListener touchListener) {
@@ -79,12 +76,18 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     }
 
     @Override
-    public boolean onDrag(View view, DragEvent dragEvent) {
+    public boolean onDrag(View dropZoneView, DragEvent dragEvent) {
         int action = dragEvent.getAction();
         if (action == DragEvent.ACTION_DROP) {
-            StageActivity.debug("Drop view " + viewBeingDragged + " on " + view);
-            if (view instanceof FrameView && viewBeingDragged instanceof FrameView)
-                layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) view);
+            StageActivity.debug("Drop dropZoneView " + viewBeingDragged + " on " + dropZoneView);
+
+            if (dropZoneView instanceof FrameView && viewBeingDragged instanceof FrameView)
+                layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) dropZoneView);
+
+            else if (dropZoneView instanceof ScreenView && viewBeingDragged instanceof FrameView) {
+               StageActivity.debug("move frame " + viewBeingDragged + " manually to " + dragEvent.getX() + "," + dragEvent.getY());
+                layoutDirector.moveView(viewBeingDragged, (int) dragEvent.getX(), (int) dragEvent.getY());
+            }
         }
         return true;
     }

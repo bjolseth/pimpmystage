@@ -2,11 +2,10 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.cisco.telepresence.sandbox.CodecInterface;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
@@ -16,8 +15,6 @@ import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
-import com.cisco.telepresence.system.ServiceProvider;
-import com.cisco.telepresence.system.SystemAIDLService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +32,8 @@ public class StageActivity extends Activity
         debugView = (TextView) findViewById(R.id.debugLabel);
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
-        createPredefineLayoutFamilySetup(screenView);
-        setupLayoutSlider();
-
+        //createPredefineLayoutFamilySetup(screenView);
+        createManualDummySetup(screenView);
     }
 
     private void buildFramesBasedOnCalls() {
@@ -45,29 +41,20 @@ public class StageActivity extends Activity
         int layoutId = 1;
         int monitorOutput = 1;
         codec.createCustomLayout(layoutId);
-        sleep(1000);
 
         int i = 0;
         for (Call call : codec.getCalls()) {
             Log.i(TAG, call.toString());
             codec.createCustomVideoFrame(layoutId, call.getCallId(), i+1, i*5000, i*5000, 5000, 5000, i+1);
-            sleep(1000);
             i++;
         }
 
         codec.assignCustomLayoutToOutput(layoutId, monitorOutput);
     }
 
-    private void sleep(int ms) {
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void setupLayoutSlider() {
-        ((SeekBar) findViewById(R.id.layoutslider)).setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        SeekBar bar = ((SeekBar) findViewById(R.id.layoutslider));
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 layoutDirector.setBigPipPercent((50 + value)/100.f);
@@ -80,6 +67,7 @@ public class StageActivity extends Activity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+        bar.setVisibility(View.VISIBLE);
     }
 
 
@@ -109,6 +97,8 @@ public class StageActivity extends Activity
         screenView.setScreen(screen);
 
         new ScreenPresenter(screenView, layoutDirector);
+        setupLayoutSlider();
+
     }
 
 

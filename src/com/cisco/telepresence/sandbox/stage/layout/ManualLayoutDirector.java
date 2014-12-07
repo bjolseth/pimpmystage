@@ -3,11 +3,10 @@ package com.cisco.telepresence.sandbox.stage.layout;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsoluteLayout;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
-public class ManualLayoutDirector implements LayoutDirector{
+public class ManualLayoutDirector implements LayoutDirector {
 
     private final ScreenView screenView;
     private static final String TAG = "pimpmystage";
@@ -25,7 +24,14 @@ public class ManualLayoutDirector implements LayoutDirector{
     }
 
     @Override
-    public void moveView(View view, int dx, int dy) {
+    public void moveView(View view, int x, int y) {
+        if (view instanceof FrameView) {
+            ((FrameView) view).setPos(x, y);
+            keepViewInsideScreen((FrameView) view);
+        }
+    }
+
+    private void moveViewDelta(View view, int dx, int dy) {
         if (view instanceof FrameView) {
             ((FrameView) view).move(dx, dy);
             keepViewInsideScreen((FrameView) view);
