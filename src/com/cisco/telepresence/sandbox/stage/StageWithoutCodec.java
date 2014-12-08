@@ -7,11 +7,9 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
-import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
-import com.cisco.telepresence.sandbox.stage.model.Call;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
@@ -20,7 +18,7 @@ import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StageActivity extends Activity
+public class StageWithoutCodec extends Activity
 {
     private static final String TAG = "pimpmystage";
     private static TextView debugView;
@@ -33,19 +31,15 @@ public class StageActivity extends Activity
         debugView = (TextView) findViewById(R.id.debugLabel);
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
-        //createPredefineLayoutFamilySetup(screenView);
-        //createManualDummySetup(screenView);
-        createCodecFreeMode(screenView);
+        createPredefineLayoutFamilySetup(screenView);
     }
-
 
     private void setupLayoutSlider() {
         SeekBar bar = ((SeekBar) findViewById(R.id.layoutslider));
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                layoutDirector.setBigPipPercent((50 + value)/100.f);
-                debug("Layout slider value: " + value);
+                layoutDirector.setBigPipPercent((50 + value) / 100.f);
             }
 
             @Override
@@ -55,21 +49,6 @@ public class StageActivity extends Activity
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
         bar.setVisibility(View.VISIBLE);
-    }
-
-    private void createCodecFreeMode(ScreenView screenView) {
-        CodecInterface codec = new CodecInterface();
-
-        LayoutDirector director = new ManualLayoutDirector(screenView);
-        LayoutChangeHandler l = new LayoutChangeHandler(codec, screenView);
-        List<Frame> frames = l.initLayoutWithFramesFromCodec();
-        Screen screen = new Screen();
-        screen.setFrames(frames);
-        screenView.setScreen(screen);
-
-        ScreenPresenter p = new ScreenPresenter(screenView, director);
-        p.setLayoutChangeHandler(new LayoutChangeHandler(codec, screenView));
-
     }
 
     private void createPredefineLayoutFamilySetup(ScreenView screenView) {
@@ -99,9 +78,7 @@ public class StageActivity extends Activity
 
         new ScreenPresenter(screenView, layoutDirector);
         setupLayoutSlider();
-
     }
-
 
     private void createManualDummySetup(ScreenView screenView) {
         LayoutDirector director = new ManualLayoutDirector(screenView);

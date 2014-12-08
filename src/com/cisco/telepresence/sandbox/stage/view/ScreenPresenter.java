@@ -1,11 +1,10 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import com.cisco.telepresence.sandbox.stage.StageWithoutCodec;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
-import com.cisco.telepresence.sandbox.stage.StageActivity;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
 
@@ -59,23 +58,23 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public void onScaleView(View view, float scale) {
         layoutDirector.scaleView(view, scale);
-        if (view instanceof FrameView)
+        if (view instanceof FrameView && layoutChangeHandler != null)
             layoutChangeHandler.frameHasChanged((FrameView) view);
     }
 
     @Override
     public void onSingleTap(View view) {
-        StageActivity.debug("Single tap view");
+        StageWithoutCodec.debug("Single tap view");
     }
 
     @Override
     public void onDoubleTap(View view) {
-        StageActivity.debug("Double tap view");
+        StageWithoutCodec.debug("Double tap view");
     }
 
     @Override
     public void onLongPress(View view) {
-        StageActivity.debug(String.format("long press view " + view));
+        StageWithoutCodec.debug(String.format("long press view " + view));
         viewBeingDragged = view;
         View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
         view.startDrag(null, shadow, null, 0);
@@ -93,14 +92,16 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
             if (dropZoneView instanceof FrameView && viewBeingDragged instanceof FrameView) {
                 layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) dropZoneView);
-                layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
+                if (layoutChangeHandler != null)
+                    layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
             }
 
             else if (dropZoneView instanceof ScreenView && viewBeingDragged instanceof FrameView) {
                 int dx = (int) dragEvent.getX() - dragStartX;
                 int dy = (int) dragEvent.getY() - dragStartY;
                 layoutDirector.moveView(viewBeingDragged, dx, dy);
-                layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
+                if (layoutChangeHandler != null)
+                    layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
                 isCurrentlyInDragMode = false;
             }
         }

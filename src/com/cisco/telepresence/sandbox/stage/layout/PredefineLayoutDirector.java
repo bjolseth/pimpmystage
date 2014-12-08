@@ -1,10 +1,8 @@
 package com.cisco.telepresence.sandbox.stage.layout;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import com.cisco.telepresence.sandbox.stage.StageActivity;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
