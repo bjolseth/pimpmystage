@@ -1,6 +1,7 @@
 package com.cisco.telepresence.sandbox.stage;
 
 import android.os.RemoteException;
+import android.util.Log;
 import com.cisco.telepresence.sandbox.stage.model.Call;
 import com.cisco.telepresence.system.ServiceProvider;
 import com.cisco.telepresence.system.SystemAIDLService;
@@ -69,6 +70,14 @@ public class CodecInterface {
     public void removeCustomFrame(int frameId, int layoutId) {
         try {
             service.removeCustomFrame(frameId, layoutId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resetCustomLayout() {
+        try {
+            service.resetCustomLayout();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

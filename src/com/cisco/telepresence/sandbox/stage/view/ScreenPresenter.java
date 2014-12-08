@@ -3,6 +3,7 @@ package com.cisco.telepresence.sandbox.stage.view;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.StageActivity;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
@@ -16,6 +17,8 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     private View viewBeingDragged;
     boolean isCurrentlyInDragMode = false;
     int dragStartX, dragStartY;
+    private LayoutChangeHandler layoutChangeHandler;
+
 
     public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
         this.screenView = screenView;
@@ -25,6 +28,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         setTouchListenerOnAllFrames(screenView, multiTouchListener);
         //setDragListenerOnAllFrames(screenView, this);
         setManualDragListenerOnScreenView(screenView, this);
+    }
+
+    public void setLayoutChangeHandler(LayoutChangeHandler handler) {
+        this.layoutChangeHandler = handler;
     }
 
     private void setManualDragListenerOnScreenView(ScreenView screenView, ScreenPresenter screenPresenter) {
@@ -52,6 +59,8 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public void onScaleView(View view, float scale) {
         layoutDirector.scaleView(view, scale);
+        if (view instanceof FrameView)
+            layoutChangeHandler.frameHasChanged((FrameView) view);
     }
 
     @Override
@@ -82,17 +91,21 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         int action = dragEvent.getAction();
         if (action == DragEvent.ACTION_DROP) {
 
-            if (dropZoneView instanceof FrameView && viewBeingDragged instanceof FrameView)
+            if (dropZoneView instanceof FrameView && viewBeingDragged instanceof FrameView) {
                 layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) dropZoneView);
+                layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
+            }
 
             else if (dropZoneView instanceof ScreenView && viewBeingDragged instanceof FrameView) {
                 int dx = (int) dragEvent.getX() - dragStartX;
                 int dy = (int) dragEvent.getY() - dragStartY;
                 layoutDirector.moveView(viewBeingDragged, dx, dy);
+                layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
                 isCurrentlyInDragMode = false;
             }
         }
         else if (action == DragEvent.ACTION_DRAG_LOCATION) {
+            // Detect drag started (use this instead of entered, to get coordinates in the correct coord system (!?)
             if (! isCurrentlyInDragMode) {
                 isCurrentlyInDragMode = true;
                 dragStartX = (int) dragEvent.getX();

@@ -97,6 +97,14 @@ public class FrameView extends RelativeLayout {
         return new Rect(x, y, x + getLayoutParams().width, y + getLayoutParams().height);
     }
 
+    public int getFrameId() {
+        return frame.getFrameId();
+    }
+
+    public int getLayer() {
+        return frame.getLayer();
+    }
+
     public String toString() {
         return String.format("Frame %s", frame.getName());
     }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
@@ -33,24 +34,10 @@ public class StageActivity extends Activity
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
         //createPredefineLayoutFamilySetup(screenView);
-        createManualDummySetup(screenView);
+        //createManualDummySetup(screenView);
+        createCodecFreeMode(screenView);
     }
 
-    private void buildFramesBasedOnCalls() {
-        CodecInterface codec = new CodecInterface();
-        int layoutId = 1;
-        int monitorOutput = 1;
-        codec.createCustomLayout(layoutId);
-
-        int i = 0;
-        for (Call call : codec.getCalls()) {
-            Log.i(TAG, call.toString());
-            codec.createCustomVideoFrame(layoutId, call.getCallId(), i+1, i*5000, i*5000, 5000, 5000, i+1);
-            i++;
-        }
-
-        codec.assignCustomLayoutToOutput(layoutId, monitorOutput);
-    }
 
     private void setupLayoutSlider() {
         SeekBar bar = ((SeekBar) findViewById(R.id.layoutslider));
@@ -70,6 +57,20 @@ public class StageActivity extends Activity
         bar.setVisibility(View.VISIBLE);
     }
 
+    private void createCodecFreeMode(ScreenView screenView) {
+        CodecInterface codec = new CodecInterface();
+
+        LayoutDirector director = new ManualLayoutDirector(screenView);
+        LayoutChangeHandler l = new LayoutChangeHandler(codec, screenView);
+        List<Frame> frames = l.initLayoutWithFramesFromCodec();
+        Screen screen = new Screen();
+        screen.setFrames(frames);
+        screenView.setScreen(screen);
+
+        ScreenPresenter p = new ScreenPresenter(screenView, director);
+        p.setLayoutChangeHandler(new LayoutChangeHandler(codec, screenView));
+
+    }
 
     private void createPredefineLayoutFamilySetup(ScreenView screenView) {
         layoutDirector = new PredefineLayoutDirector(screenView);
@@ -80,7 +81,7 @@ public class StageActivity extends Activity
         int bigSize = 7000;
         int max = 10000;
         int smallSize = max - bigSize;
-        Frame f1 = new Frame(Frame.FrameType.VIDEO, bigSize, bigSize, (max-bigSize)/2, 0, "Mr Prominent");
+        Frame f1 = new Frame(1, Frame.FrameType.VIDEO, bigSize, bigSize, (max-bigSize)/2, 0, "Mr Prominent", 1);
         frames.add(f1);
 
         int numberOfPips = 3;
@@ -88,7 +89,7 @@ public class StageActivity extends Activity
         int y = bigSize;
         int x = (max - (numberOfPips*smallSize))/2 - spacing*(numberOfPips-1);
         for (int i=0; i<numberOfPips; i++) {
-            Frame pip = new Frame(Frame.FrameType.VIDEO, smallSize - spacing*2, smallSize - spacing*2, x, y + spacing, "Pip " + (i+1));
+            Frame pip = new Frame(i+1, Frame.FrameType.VIDEO, smallSize - spacing*2, smallSize - spacing*2, x, y + spacing, "Pip " + (i+1), i+1);
             x += smallSize + spacing;
             frames.add(pip);
         }
@@ -108,13 +109,13 @@ public class StageActivity extends Activity
         Screen screen = new Screen();
         List<Frame> frames = new ArrayList<Frame>();
 
-        Frame f1 = new Frame(Frame.FrameType.VIDEO, 6000, 6000, 1000, 0, "Mr Jones");
+        Frame f1 = new Frame(1, Frame.FrameType.VIDEO, 6000, 6000, 1000, 0, "Mr Jones", 1);
         frames.add(f1);
 
-        Frame f3 = new Frame(Frame.FrameType.LOCAL_PRESENTATATION, 3800, 3800, 2000, 6100, "PowerPoint");
+        Frame f3 = new Frame(2, Frame.FrameType.LOCAL_PRESENTATATION, 3800, 3800, 2000, 6100, "PowerPoint", 2);
         frames.add(f3);
 
-        Frame f2 = new Frame(Frame.FrameType.SELFVIEW, 2000, 2000, 8000, 7000, "You");
+        Frame f2 = new Frame(3, Frame.FrameType.SELFVIEW, 2000, 2000, 8000, 7000, "You", 3);
         frames.add(f2);
 
         screen.setFrames(frames);

@@ -14,15 +14,27 @@ public class Frame {
     private int height;
     private int x;
     private int y;
+    private int layer;
     private String name;
+    private int frameId;
 
-    public Frame(FrameType type, int width, int height, int x, int y, String name) {
+    public Frame(int frameId, FrameType type, int width, int height, int x, int y, String name, int layer) {
+        this.frameId = frameId;
         this.frameType = type;
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         this.name = name;
+        this.layer = layer;
+    }
+
+    public int getFrameId() {
+        return frameId;
+    }
+
+    public void setFrameId(int frameId) {
+        this.frameId = frameId;
     }
 
     public FrameType getFrameType() {
@@ -71,6 +83,14 @@ public class Frame {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getLayer() {
+        return layer;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
     }
 
     public String toString() {
