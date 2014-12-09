@@ -5,7 +5,10 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
@@ -16,10 +19,11 @@ import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
+import android.view.ViewGroup.LayoutParams;
 
 import java.util.List;
 
-public class StageController implements View.OnDragListener {
+public class StageController implements View.OnDragListener, View.OnTouchListener {
 
     private View stage;
     private Context context;
@@ -36,6 +40,20 @@ public class StageController implements View.OnDragListener {
         createFakeCodecPredefinedLayoutMode(screenView);
 
         stage.findViewById(R.id.garbageCan).setOnDragListener(this);
+        populateTray();
+    }
+
+    private void populateTray() {
+        int n = 15;
+        ViewGroup tray = (ViewGroup) stage.findViewById(R.id.tray);
+        for (int i=0; i<n; i++) {
+            View.inflate(context, R.layout.tray_item, tray);
+            ViewGroup button = (ViewGroup) tray.getChildAt(i);
+            TextView t = (TextView) button.findViewById(R.id.tray_item_text);
+            t.setText("Button " + (i + 1));
+
+            button.setOnTouchListener(this);
+        }
     }
 
     private void createFakeCodecPredefinedLayoutMode(ScreenView screenView) {
@@ -109,9 +127,19 @@ public class StageController implements View.OnDragListener {
         return true;
     }
 
+
+
     private void removeFrame(FrameView frame) {
         screenView.remove(frame);
         director.updatePositions();
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if(motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
+            view.startDrag(null, shadow, view, 0);
+        }
+        return false;
+    }
 }
