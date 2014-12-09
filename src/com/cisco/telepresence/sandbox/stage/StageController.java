@@ -15,7 +15,6 @@ import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
-import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
@@ -33,13 +32,13 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     private CodecInterface codec;
     private ScreenView screenView;
     private int lastSystemUIVisibility;
-    private Handler enterLeanbackTimer;
+    private Handler enterLeanBackTimer;
 
     public StageController(Context context, View stage) {
         this.context = context;
         this.stage = stage;
         screenView = (ScreenView) stage.findViewById(R.id.singlescreen);
-        enterLeanbackTimer = new Handler();
+        enterLeanBackTimer = new Handler();
         createFakeCodecPredefinedLayoutMode(screenView);
 
         stage.findViewById(R.id.garbageCan).setOnDragListener(this);
@@ -205,8 +204,8 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
                 enableLeanBackMode(true);
             }
         };
-        enterLeanbackTimer.removeCallbacksAndMessages(null);
+        enterLeanBackTimer.removeCallbacksAndMessages(null);
         // And fire the event in 3s time
-        enterLeanbackTimer.postDelayed(enterLeanback, LEAN_BACK_TIMEOUT);
+        enterLeanBackTimer.postDelayed(enterLeanback, LEAN_BACK_TIMEOUT);
     }
 }

@@ -6,7 +6,7 @@
         android:id="@+id/stage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EEE"
+        android:background="@drawable/dunes_idefix"
         android:animateLayoutChanges="true"
         >
 
@@ -27,7 +27,7 @@
             android:id="@+id/singlescreen"
             android:layout_width="950dp"
             android:layout_height="534dp"
-            android:background="#F5F5F5"
+            android:background="#5999"
             android:layout_below="@id/garbageCan"
             android:layout_centerHorizontal="true"
             />

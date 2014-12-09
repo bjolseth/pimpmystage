@@ -1,6 +1,8 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.view.View;
 import android.widget.AbsoluteLayout;
@@ -9,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.util.ImageBlur;
 
 public class FrameView extends RelativeLayout {
 
@@ -30,12 +33,26 @@ public class FrameView extends RelativeLayout {
 
     private void styleAvatar(Frame.FrameType type, String name) {
         ImageView img = (ImageView) findViewById(R.id.avatar_icon);
+
+        int image = R.drawable.avatar_camera;
         if (type == Frame.FrameType.SELFVIEW)
-            img.setImageResource(R.drawable.avatar_camera);
+            image = R.drawable.avatar_camera;
         else if (type == Frame.FrameType.VIDEO)
-            img.setImageResource(R.drawable.avatar_single);
+            image = R.drawable.meeting1;
         else if (type == Frame.FrameType.LOCAL_PRESENTATATION)
-            img.setImageResource(R.drawable.avatar_local_presentation);
+            image = R.drawable.presentation;
+
+        if (name.equalsIgnoreCase("meeting1"))
+            image = R.drawable.meeting1;
+        else if (name.equalsIgnoreCase("meeting2"))
+            image = R.drawable.meeting2;
+        else if (name.equalsIgnoreCase("meeting3"))
+            image = R.drawable.meeting3;
+
+        img.setImageResource(image);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), image);
+//        Bitmap blur = ImageBlur.blurBitmap(getContext(), bitmap);
+//        img.setImageBitmap(blur);
 
         TextView text = (TextView) findViewById(R.id.avatar_text);
         text.setText(name);
