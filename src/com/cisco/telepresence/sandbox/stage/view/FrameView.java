@@ -38,9 +38,9 @@ public class FrameView extends RelativeLayout {
         if (type == Frame.FrameType.SELFVIEW)
             image = R.drawable.avatar_camera;
         else if (type == Frame.FrameType.VIDEO)
-            image = R.drawable.meeting1;
+            image = R.drawable.avatar_single;
         else if (type == Frame.FrameType.LOCAL_PRESENTATATION)
-            image = R.drawable.presentation;
+            image = R.drawable.avatar_pc;
 
         if (name.equalsIgnoreCase("meeting1"))
             image = R.drawable.meeting1;
@@ -48,6 +48,10 @@ public class FrameView extends RelativeLayout {
             image = R.drawable.meeting2;
         else if (name.equalsIgnoreCase("meeting3"))
             image = R.drawable.meeting3;
+        else if (name.equalsIgnoreCase("presentation1"))
+            image = R.drawable.presentation1;
+        else if (name.equalsIgnoreCase("team"))
+            image = R.drawable.team_photo;
 
         img.setImageResource(image);
 //        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), image);

@@ -13,7 +13,7 @@ public class SimulatedCodec implements CodecInterface {
         int initialParticipants = 4;
         List<Call> calls = new ArrayList<Call>();
 
-        String[] names = {"meeting1", "meeting2", "meeting3", "meeting4"};
+        String[] names = {"meeting1", "meeting2", "meeting3", "presentation1"};
 
         for (int i=0; i<initialParticipants; i++) {
             Call call = new Call(i+1, names[i]);
