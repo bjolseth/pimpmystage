@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
@@ -18,7 +19,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
     private final ScreenView screenView;
     private static final String TAG = "pimpmystage";
-    private enum LayoutFamily {Prominent, Overlay, Equal};
+    private enum LayoutFamily {Prominent, Overlay, Equal, Single};
     private List<FrameView> frames;
     private LayoutFamily currentFamily = LayoutFamily.Overlay;
 
@@ -26,6 +27,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
     private final float MinimumsEqualPercent = 0.49f;
     private final float TriggerPointEqualPercent = 0.50f;
     private final float TriggerPointOverlayPercent = 0.80f;
+    private final float TriggerPointSinglePercent = 1.06f;
 
     private float currentBigPipPercent = 0.7f;
 
@@ -60,13 +62,14 @@ public class PredefineLayoutDirector implements LayoutDirector{
     }
 
     public void setBigPipPercent(float percent) {
-        percent = Math.min(1, percent);
+        percent = Math.min(TriggerPointSinglePercent + 0.04f, percent);
 
         if (frames.size() < 4)
             percent = Math.max(0.49f, percent);
         else
             percent = Math.max(0.65f, percent);
 
+        Debug.debug("Set percent ratio: %.2f", percent);
         currentBigPipPercent = percent;
         updatePositions();
     }
@@ -84,6 +87,8 @@ public class PredefineLayoutDirector implements LayoutDirector{
             drawOverlayMode();
         else if (currentFamily == LayoutFamily.Equal)
             drawEqualMode(false);
+        else if (currentFamily == LayoutFamily.Single)
+            drawSingleMode();
     }
 
     @Override
@@ -113,6 +118,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
             return;
         }
 
+        // For anything more than 3 frames, we draw four in a grid and skip the rest
         int xCenter = screenView.getWidth()/2;
         int yCenter = screenView.getHeight()/2;
 
@@ -135,10 +141,23 @@ public class PredefineLayoutDirector implements LayoutDirector{
         }
     }
 
+    private void drawSingleMode() {
+        FrameView prominentView = getMainView();
+
+        Rect bounds = new Rect(0, 0, screenView.getWidth(), screenView.getHeight());
+        prominentView.setBounds(bounds);
+    }
+
+    private void setPipsVisible(boolean visible) {
+        for (int i=1; i<frames.size(); i++) {
+            frames.get(i).setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
     private void drawOverlayMode() {
 
         FrameView prominentView = getMainView();
-        int prominentHeight = (int) (screenView.getHeight() * currentBigPipPercent);
+        int prominentHeight = (int) (screenView.getHeight() * Math.min(currentBigPipPercent, 1.0f));
         int prominentWidth = prominentHeight * 16/9;
 
         int max = screenView.getWidth();
@@ -196,6 +215,16 @@ public class PredefineLayoutDirector implements LayoutDirector{
             stopAnimations();
             switchLayoutFamily(LayoutFamily.Prominent);
             drawProminentMode(true);
+        }
+        else if (currentFamily == LayoutFamily.Overlay && currentBigPipPercent > TriggerPointSinglePercent) {
+            switchLayoutFamily(LayoutFamily.Single);
+            setPipsVisible(false);
+            drawSingleMode();
+        }
+        else if (currentFamily == LayoutFamily.Single && currentBigPipPercent < TriggerPointSinglePercent) {
+            switchLayoutFamily(LayoutFamily.Overlay);
+            setPipsVisible(true);
+            drawOverlayMode();
         }
     }
 
