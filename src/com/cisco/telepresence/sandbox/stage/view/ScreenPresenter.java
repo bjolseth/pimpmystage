@@ -1,26 +1,23 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
-import android.graphics.Color;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
-import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
-import com.cisco.telepresence.sandbox.stage.StageWithoutCodec;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
+import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
 
 public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, View.OnDragListener {
 
-    private static final String TAG = "pimpmystage";
     private ScreenView screenView;
     private LayoutDirector layoutDirector;
-    private View viewBeingDragged;
     boolean isCurrentlyInDragMode = false;
     int dragStartX, dragStartY;
     private LayoutChangeHandler layoutChangeHandler;
+    private View.OnTouchListener touchListener;
+    private View.OnDragListener onDragListener;
 
 
     public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
@@ -42,6 +39,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     }
 
     private void setTouchListenerOnAllFrames(ScreenView screenView, View.OnTouchListener touchListener) {
+        this.touchListener = touchListener;
         for (int i=0; i<screenView.getChildCount(); i++) {
             View view = screenView.getChildAt(i);
             if (view instanceof FrameView) {
@@ -51,6 +49,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     }
 
     private void setDragListenerOnAllFrames(ScreenView screenView, View.OnDragListener dragListener) {
+        this.onDragListener = dragListener;
         for (int i=0; i<screenView.getChildCount(); i++) {
             View view = screenView.getChildAt(i);
             if (view instanceof FrameView) {
@@ -76,7 +75,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onLongPress(View view) {
-        viewBeingDragged = view;
         View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
         view.startDrag(null, shadow, view, 0);
     }
@@ -89,10 +87,14 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public boolean onDrag(View dropTarget, DragEvent dragEvent) {
         int action = dragEvent.getAction();
+        View viewBeingDragged = (View) dragEvent.getLocalState();
 
         if (action == DragEvent.ACTION_DROP) {
             if (viewBeingDragged instanceof FrameView)
                 onFrameViewDropped((FrameView) viewBeingDragged, dropTarget, dragEvent);
+            else if (viewBeingDragged instanceof TrayButton) {
+                addTrayElementToScreen((TrayButton) viewBeingDragged);
+            }
         }
         else if (action == DragEvent.ACTION_DRAG_ENTERED) {
             dragEnteredOrLeft(viewBeingDragged, dropTarget, true);
@@ -109,6 +111,15 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
             }
         }
         return true;
+    }
+
+    private void addTrayElementToScreen(TrayButton button) {
+        // TODO need to make unique frame ids
+        Frame frame = new Frame(0, Frame.FrameType.VIDEO, 0, 0, 2000, 2000, button.getName(), 1);
+        FrameView view = new FrameView(screenView.getContext(), frame, screenView.getScaleWidth(), screenView.getScaleHeight());
+        screenView.addFrame(view);
+        view.setOnTouchListener(touchListener);
+        layoutDirector.updatePositions();
     }
 
     private void dragEnteredOrLeft(View viewBeingDragged, View dropTarget, boolean entered) {

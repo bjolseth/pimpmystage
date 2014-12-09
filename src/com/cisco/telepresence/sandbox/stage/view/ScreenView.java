@@ -51,18 +51,21 @@ public class ScreenView extends AbsoluteLayout {
 
     public float getScaleWidth() {
         float factor = getLayoutParams().width / (float) LOGICAL_WIDTH;
-        Log.i(TAG, "scalex: " + factor);
         return factor;
     }
 
     public float getScaleHeight() {
         float factor = getLayoutParams().height / (float) LOGICAL_HEIGHT;
-        Log.i(TAG, "scaley: " + factor);
         return factor;
     }
 
     public void remove(FrameView frame) {
         removeView(frame);
         frames.remove(frame);
+    }
+
+    public void addFrame(FrameView view) {
+        addView(view);
+        frames.add(view);
     }
 }

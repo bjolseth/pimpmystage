@@ -20,6 +20,7 @@ import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import android.view.ViewGroup.LayoutParams;
+import com.cisco.telepresence.sandbox.stage.view.TrayButton;
 
 import java.util.List;
 
@@ -47,11 +48,8 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         int n = 15;
         ViewGroup tray = (ViewGroup) stage.findViewById(R.id.tray);
         for (int i=0; i<n; i++) {
-            View.inflate(context, R.layout.tray_item, tray);
-            ViewGroup button = (ViewGroup) tray.getChildAt(i);
-            TextView t = (TextView) button.findViewById(R.id.tray_item_text);
-            t.setText("Button " + (i + 1));
-
+            TrayButton button = new TrayButton(context, Frame.FrameType.LOCAL_PRESENTATATION, "Button " + (i+1));
+            tray.addView(button);
             button.setOnTouchListener(this);
         }
     }

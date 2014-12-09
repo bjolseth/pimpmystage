@@ -40,6 +40,8 @@ public class PredefineLayoutDirector implements LayoutDirector{
     }
 
     private FrameView getMainView() {
+        if (frames.isEmpty())
+            return null;
         return frames.get(0);
     }
 
@@ -69,7 +71,11 @@ public class PredefineLayoutDirector implements LayoutDirector{
         updatePositions();
     }
 
+    @Override
     public void updatePositions() {
+        if (frames.isEmpty())
+            return;
+        
         determineLayoutMode();
 
         if (currentFamily == LayoutFamily.Prominent)
