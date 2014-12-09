@@ -61,4 +61,8 @@ public class ScreenView extends AbsoluteLayout {
         return factor;
     }
 
+    public void remove(FrameView frame) {
+        removeView(frame);
+        frames.remove(frame);
+    }
 }

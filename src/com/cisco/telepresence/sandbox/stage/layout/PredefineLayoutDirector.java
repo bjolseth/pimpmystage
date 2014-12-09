@@ -133,7 +133,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
         FrameView prominentView = getMainView();
         int prominentHeight = (int) (screenView.getHeight() * currentBigPipPercent);
-        Log.i("jalla", "screen height:" + screenView.getHeight());
         int prominentWidth = prominentHeight * 16/9;
 
         int max = screenView.getWidth();
@@ -144,7 +143,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
         int x = (max-prominentWidth)/2;
         Rect bounds = new Rect(x, 0, x + prominentWidth, prominentHeight);
         prominentView.setBounds(bounds);
-        Log.i("jalla", "set prmoninent: " + bounds);
 
         List<FrameView> frames = screenView.getFrameViews();
 

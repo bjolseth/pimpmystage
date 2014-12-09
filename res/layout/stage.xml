@@ -15,7 +15,6 @@
             android:layout_height="600dp"
             android:background="#F5F5F5"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="10dp"
             />
 
     <TextView
@@ -25,8 +24,10 @@
             android:layout_above="@id/singlescreen"
             android:layout_centerHorizontal="true"
             android:textColor="#000"
+            android:textSize="25dp"
             android:text="@string/remove"
-            android:visibility="invisible"
+            android:alpha="0"
+            android:layout_marginBottom="10dp"
             />
 
     <SeekBar

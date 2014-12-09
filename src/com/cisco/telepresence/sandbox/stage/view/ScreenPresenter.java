@@ -1,7 +1,11 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.widget.TextView;
+import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.StageWithoutCodec;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
@@ -74,7 +78,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     public void onLongPress(View view) {
         viewBeingDragged = view;
         View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
-        view.startDrag(null, shadow, null, 0);
+        view.startDrag(null, shadow, view, 0);
     }
 
     @Override
@@ -83,24 +87,18 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
 
     @Override
-    public boolean onDrag(View dropZoneView, DragEvent dragEvent) {
+    public boolean onDrag(View dropTarget, DragEvent dragEvent) {
         int action = dragEvent.getAction();
+
         if (action == DragEvent.ACTION_DROP) {
-
-            if (dropZoneView instanceof FrameView && viewBeingDragged instanceof FrameView) {
-                layoutDirector.swapPositionAndSize((FrameView) viewBeingDragged, (FrameView) dropZoneView);
-                if (layoutChangeHandler != null)
-                    layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
-            }
-
-            else if (dropZoneView instanceof ScreenView && viewBeingDragged instanceof FrameView) {
-                int dx = (int) dragEvent.getX() - dragStartX;
-                int dy = (int) dragEvent.getY() - dragStartY;
-                layoutDirector.moveView(viewBeingDragged, dx, dy);
-                if (layoutChangeHandler != null)
-                    layoutChangeHandler.frameHasChanged((FrameView) viewBeingDragged);
-                isCurrentlyInDragMode = false;
-            }
+            if (viewBeingDragged instanceof FrameView)
+                onFrameViewDropped((FrameView) viewBeingDragged, dropTarget, dragEvent);
+        }
+        else if (action == DragEvent.ACTION_DRAG_ENTERED) {
+            dragEnteredOrLeft(viewBeingDragged, dropTarget, true);
+        }
+        else if (action == DragEvent.ACTION_DRAG_EXITED) {
+            dragEnteredOrLeft(viewBeingDragged, dropTarget, false);
         }
         else if (action == DragEvent.ACTION_DRAG_LOCATION) {
             // Detect drag started (use this instead of entered, to get coordinates in the correct coord system (!?)
@@ -111,6 +109,27 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
             }
         }
         return true;
+    }
+
+    private void dragEnteredOrLeft(View viewBeingDragged, View dropTarget, boolean entered) {
+    }
+
+    private void onFrameViewDropped(FrameView frameView, View dropZoneView, DragEvent dragEvent) {
+        if (dropZoneView instanceof FrameView) {
+            layoutDirector.swapPositionAndSize(frameView, (FrameView) dropZoneView);
+            if (layoutChangeHandler != null)
+                layoutChangeHandler.frameHasChanged(frameView);
+        }
+
+        else if (dropZoneView instanceof ScreenView) {
+            int dx = (int) dragEvent.getX() - dragStartX;
+            int dy = (int) dragEvent.getY() - dragStartY;
+            layoutDirector.moveView(frameView, dx, dy);
+            if (layoutChangeHandler != null)
+                layoutChangeHandler.frameHasChanged(frameView);
+            isCurrentlyInDragMode = false;
+        }
+
     }
 
 }
