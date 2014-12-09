@@ -16,6 +16,7 @@ import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
@@ -42,6 +43,25 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
 
         stage.findViewById(R.id.garbageCan).setOnDragListener(this);
         populateTray();
+        setListeners();
+    }
+
+    private void setListeners() {
+        stage.findViewById(R.id.tray_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTray(true);
+            }
+        });
+
+        stage.findViewById(R.id.glass_pane).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (stage.findViewById(R.id.tray_frame).getVisibility() == View.VISIBLE)
+                    showTray(false);
+                return false;
+            }
+        });
     }
 
     private void populateTray() {
@@ -115,7 +135,6 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         }
         else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
             if (dropTarget.getId() == R.id.garbageCan) {
-                Log.i("jalla", "remove object " + dragEvent.getLocalState());
                 ((TextView) dropTarget).setTextColor(Color.BLACK);
                 if (item instanceof FrameView)
                     removeFrame((FrameView) item);
@@ -125,7 +144,9 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         return true;
     }
 
-
+    private void showTray(boolean show) {
+        stage.findViewById(R.id.tray_frame).setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 
     private void removeFrame(FrameView frame) {
         screenView.remove(frame);

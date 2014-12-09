@@ -75,7 +75,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
     public void updatePositions() {
         if (frames.isEmpty())
             return;
-        
+
         determineLayoutMode();
 
         if (currentFamily == LayoutFamily.Prominent)

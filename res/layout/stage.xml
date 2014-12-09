@@ -12,8 +12,8 @@
 
     <com.cisco.telepresence.sandbox.stage.view.ScreenView
             android:id="@+id/singlescreen"
-            android:layout_width="1067dp"
-            android:layout_height="600dp"
+            android:layout_width="950dp"
+            android:layout_height="534dp"
             android:background="#F5F5F5"
             android:layout_centerInParent="true"
             />
@@ -52,11 +52,41 @@
             android:visibility="gone"
             />
 
+    <LinearLayout
+            android:id="@+id/callcontrolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/singlescreen"
+    >
+        <ImageView
+                android:id="@+id/tray_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:background="@drawable/cc_button_black"
+                android:src="@drawable/cc_add"
+                />
+    </LinearLayout>
+
+    <View
+            android:id="@+id/glass_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0000"
+          />
+
     <HorizontalScrollView
+            android:id="@+id/tray_frame"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:background="#C000"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:visibility="gone"
+
+            >
             <LinearLayout
                     android:id="@+id/tray"
                     android:layout_width="wrap_content"
