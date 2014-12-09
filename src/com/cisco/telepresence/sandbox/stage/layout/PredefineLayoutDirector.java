@@ -1,8 +1,10 @@
 package com.cisco.telepresence.sandbox.stage.layout;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
@@ -30,6 +32,11 @@ public class PredefineLayoutDirector implements LayoutDirector{
     public PredefineLayoutDirector(ScreenView screenView) {
         this.screenView = screenView;
         frames = screenView.getFrameViews();
+
+        // set overlay as default
+        currentBigPipPercent = TriggerPointOverlayPercent + 0.01f;
+        setMainView(frames.get(0));
+        currentFamily = LayoutFamily.Overlay;
     }
 
     private FrameView getMainView() {
@@ -59,6 +66,10 @@ public class PredefineLayoutDirector implements LayoutDirector{
             percent = Math.max(0.65f, percent);
 
         currentBigPipPercent = percent;
+        updatePositions();
+    }
+
+    public void updatePositions() {
         determineLayoutMode();
 
         if (currentFamily == LayoutFamily.Prominent)
@@ -122,6 +133,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
         FrameView prominentView = getMainView();
         int prominentHeight = (int) (screenView.getHeight() * currentBigPipPercent);
+        Log.i("jalla", "screen height:" + screenView.getHeight());
         int prominentWidth = prominentHeight * 16/9;
 
         int max = screenView.getWidth();
@@ -132,6 +144,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
         int x = (max-prominentWidth)/2;
         Rect bounds = new Rect(x, 0, x + prominentWidth, prominentHeight);
         prominentView.setBounds(bounds);
+        Log.i("jalla", "set prmoninent: " + bounds);
 
         List<FrameView> frames = screenView.getFrameViews();
 
@@ -217,7 +230,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
         int pipHeight = screenView.getHeight() - prominentHeight;
         int pipWidth = (int) (pipHeight * 16/9.);
 
-        // TODO Need to find pips properly
         int xPip = (screenView.getWidth() - pipWidth*(frames.size() -1))/2;
         int yPip = prominentHeight;
         for (int i = 1; i<frames.size(); i++) {

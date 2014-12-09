@@ -64,17 +64,14 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onSingleTap(View view) {
-        StageWithoutCodec.debug("Single tap view");
     }
 
     @Override
     public void onDoubleTap(View view) {
-        StageWithoutCodec.debug("Double tap view");
     }
 
     @Override
     public void onLongPress(View view) {
-        StageWithoutCodec.debug(String.format("long press view " + view));
         viewBeingDragged = view;
         View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
         view.startDrag(null, shadow, null, 0);

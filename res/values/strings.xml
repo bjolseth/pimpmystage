@@ -4,5 +4,6 @@
     <string name="app_name">Sandbox</string>
     <string name="avatarname">Participant 1</string>
     <string name="garbagecan">Drag here to remove</string>
+    <string name="remove">Remove</string>
 
 </resources>

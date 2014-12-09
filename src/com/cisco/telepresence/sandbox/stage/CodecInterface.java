@@ -1,86 +1,25 @@
 package com.cisco.telepresence.sandbox.stage;
 
-import android.os.RemoteException;
-import android.util.Log;
 import com.cisco.telepresence.sandbox.stage.model.Call;
-import com.cisco.telepresence.system.ServiceProvider;
-import com.cisco.telepresence.system.SystemAIDLService;
-import com.cisco.telepresence.system.types.data.CallStatus;
+import com.cisco.telepresence.sandbox.stage.model.Frame;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CodecInterface {
 
-    private SystemAIDLService service;
+public interface CodecInterface {
+    List<Call> getCalls();
 
-    public CodecInterface() {
-        service = getService();
-    }
+    List<Frame> getFrames();
 
-    public List<Call> getCalls() {
-        List<Call> calls = new ArrayList<Call>();
-        try {
-            for (CallStatus call : service.getCalls()) {
-                calls.add(new Call(call.getCallId(), call.getDisplayName()));
-            }
+    void createCustomLayout(int layoutId);
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        return calls;
-    }
+    void createCustomVideoFrame(int layoutId, int callId, int frameId, int posX, int posY, int width, int height, int layer);
 
-    private static SystemAIDLService getService() {
-        return ServiceProvider.getSystemService();
-    }
+    void updateCustomVideoFrame(int layoutId, int frameId, int posX, int posY, int width, int height, int layer);
 
-    public void createCustomLayout(int layoutId) {
-        try {
-            service.createCustomLayout(layoutId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
+    void assignCustomLayoutToOutput(int layoutId, int outputId);
 
-    public void createCustomVideoFrame(int layoutId, int callId, int frameId, int posX, int posY, int width, int height, int layer) {
-        try {
-            service.createCustomVideoFrame(layoutId, callId, frameId, posX, posY, width, height, layer);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
+    void removeCustomFrame(int frameId, int layoutId);
 
-    public void updateCustomVideoFrame(int layoutId, int frameId, int posX, int posY, int width, int height, int layer) {
-        try {
-            service.updateCustomVideoFrame(layoutId, frameId, posX, posY, width, height, layer);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void assignCustomLayoutToOutput(int layoutId, int outputId) {
-        try {
-            service.assignCustomLayoutToOutput(layoutId, outputId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void removeCustomFrame(int frameId, int layoutId) {
-        try {
-            service.removeCustomFrame(frameId, layoutId);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void resetCustomLayout() {
-        try {
-            service.resetCustomLayout();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
+    void resetCustomLayout();
 }
