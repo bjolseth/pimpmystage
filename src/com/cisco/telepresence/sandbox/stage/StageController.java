@@ -1,11 +1,10 @@
 package com.cisco.telepresence.sandbox.stage;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
-import android.util.Log;
 import android.view.DragEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,30 +19,33 @@ import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
-import android.view.ViewGroup.LayoutParams;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
 
 import java.util.List;
 
-public class StageController implements View.OnDragListener, View.OnTouchListener {
+public class StageController implements View.OnDragListener, View.OnTouchListener, View.OnSystemUiVisibilityChangeListener {
 
+    public static final int LEAN_BACK_TIMEOUT = 10000;
     private View stage;
     private Context context;
-    private static final String TAG = "pimpmystage";
     private PredefineLayoutDirector director;
     private ScreenPresenter screenPresenter;
     private CodecInterface codec;
     private ScreenView screenView;
+    private int lastSystemUIVisibility;
+    private Handler enterLeanbackTimer;
 
     public StageController(Context context, View stage) {
         this.context = context;
         this.stage = stage;
         screenView = (ScreenView) stage.findViewById(R.id.singlescreen);
+        enterLeanbackTimer = new Handler();
         createFakeCodecPredefinedLayoutMode(screenView);
 
         stage.findViewById(R.id.garbageCan).setOnDragListener(this);
         populateTray();
         setListeners();
+        resetLeanBackTimer();
     }
 
     private void setListeners() {
@@ -57,11 +59,14 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         stage.findViewById(R.id.glass_pane).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                resetLeanBackTimer();
                 if (stage.findViewById(R.id.tray_frame).getVisibility() == View.VISIBLE)
                     showTray(false);
                 return false;
             }
         });
+
+        ((Activity) context).getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
     }
 
     private void populateTray() {
@@ -160,5 +165,48 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
             view.startDrag(null, shadow, view, 0);
         }
         return false;
+    }
+
+    protected void enableLeanBackMode(boolean enabled) {
+        int newVisibility =  View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
+        if(enabled) {
+            newVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN
+                    |  View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        }
+
+        // Set the visibility
+        ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(newVisibility);
+    }
+
+    @Override
+    public void onSystemUiVisibilityChange(int visibility) {
+        boolean outOfLeanback =  ((lastSystemUIVisibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0
+                && (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0);
+
+        if (outOfLeanback)
+            resetLeanBackTimer();
+
+        lastSystemUIVisibility = visibility;
+        setLeanBackVisibility(!outOfLeanback);
+    }
+
+    private void setLeanBackVisibility(boolean goingToLeanback) {
+        stage.findViewById(R.id.callcontrolbar).setVisibility(goingToLeanback ? View.INVISIBLE: View.VISIBLE);
+        showTray(false);
+    }
+
+    private void resetLeanBackTimer() {
+        // First cancel any queued events - i.e. resetting the countdown clock
+        Runnable enterLeanback = new Runnable() {
+            @Override
+            public void run() {
+                enableLeanBackMode(true);
+            }
+        };
+        enterLeanbackTimer.removeCallbacksAndMessages(null);
+        // And fire the event in 3s time
+        enterLeanbackTimer.postDelayed(enterLeanback, LEAN_BACK_TIMEOUT);
     }
 }

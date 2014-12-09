@@ -10,25 +10,26 @@
         android:animateLayoutChanges="true"
         >
 
-    <com.cisco.telepresence.sandbox.stage.view.ScreenView
-            android:id="@+id/singlescreen"
-            android:layout_width="950dp"
-            android:layout_height="534dp"
-            android:background="#F5F5F5"
-            android:layout_centerInParent="true"
-            />
-
     <TextView
             android:id="@+id/garbageCan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/singlescreen"
+            android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:textColor="#000"
             android:textSize="25dp"
             android:text="@string/remove"
             android:alpha="0"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="20dp"
+            />
+
+    <com.cisco.telepresence.sandbox.stage.view.ScreenView
+            android:id="@+id/singlescreen"
+            android:layout_width="950dp"
+            android:layout_height="534dp"
+            android:background="#F5F5F5"
+            android:layout_below="@id/garbageCan"
+            android:layout_centerHorizontal="true"
             />
 
     <SeekBar
