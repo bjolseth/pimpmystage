@@ -195,8 +195,8 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     }
 
     protected void enableLeanBackMode(boolean enabled) {
-        int newVisibility =  View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        int newVisibility =
+                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
         if(enabled) {
             newVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN
