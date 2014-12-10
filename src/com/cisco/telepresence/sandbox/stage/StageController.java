@@ -8,6 +8,8 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
@@ -15,6 +17,7 @@ import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
@@ -69,7 +72,6 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     }
 
     private void populateTray() {
-        int n = 15;
         ViewGroup tray = (ViewGroup) stage.findViewById(R.id.tray);
         for(Frame frame : codec.getFrames()) {
             TrayButton button = new TrayButton(context, frame.getFrameType(), frame.getName());
@@ -148,8 +150,34 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         return true;
     }
 
-    private void showTray(boolean show) {
-        stage.findViewById(R.id.tray_frame).setVisibility(show ? View.VISIBLE : View.GONE);
+    private void showTray(final boolean show) {
+        final View tray = stage.findViewById(R.id.tray_frame);
+
+        // already in the right state
+        if ((show && tray.getVisibility() == View.VISIBLE) ||
+                ! show && tray.getVisibility() != View.VISIBLE)
+            return;
+
+        int animation = show ? R.anim.slide_up : R.anim.slide_down;
+        Animation slide = AnimationUtils.loadAnimation(context, animation);
+        if (show)
+            tray.setVisibility(View.VISIBLE);
+
+        slide.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tray.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+        tray.startAnimation(slide);
+
     }
 
     private void removeFrame(FrameView frame) {

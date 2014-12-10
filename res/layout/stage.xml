@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/dunes_idefix"
-        android:animateLayoutChanges="true"
+        android:animateLayoutChanges="false"
         >
 
     <TextView
@@ -42,16 +42,6 @@
             android:progress="20"
             android:visibility="gone"
     />
-
-    <TextView
-            android:id="@+id/debugLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/layoutslider"
-            android:layout_centerHorizontal="true"
-            android:textColor="#000"
-            android:visibility="gone"
-            />
 
     <LinearLayout
             android:id="@+id/callcontrolbar"
@@ -91,6 +81,7 @@
             <LinearLayout
                     android:id="@+id/tray"
                     android:layout_width="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:layout_alignParentBottom="true"
