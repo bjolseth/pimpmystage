@@ -48,7 +48,7 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     }
 
     private void setListeners() {
-        stage.findViewById(R.id.tray_button).setOnClickListener(new View.OnClickListener() {
+        stage.findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showTray(true);
@@ -71,8 +71,8 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     private void populateTray() {
         int n = 15;
         ViewGroup tray = (ViewGroup) stage.findViewById(R.id.tray);
-        for (int i=0; i<n; i++) {
-            TrayButton button = new TrayButton(context, Frame.FrameType.LOCAL_PRESENTATATION, "Button " + (i+1));
+        for(Frame frame : codec.getFrames()) {
+            TrayButton button = new TrayButton(context, frame.getFrameType(), frame.getName());
             tray.addView(button);
             button.setOnTouchListener(this);
         }

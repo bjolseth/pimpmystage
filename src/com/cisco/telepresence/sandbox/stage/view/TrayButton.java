@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.util.Avatars;
 
 public class TrayButton extends LinearLayout {
 
@@ -21,6 +22,7 @@ public class TrayButton extends LinearLayout {
         setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         ((TextView) findViewById(R.id.tray_item_text)).setText(name);
+        findViewById(R.id.tray_item).setBackgroundResource(Avatars.getAvatarImageId(name, type));
     }
 
     public Frame.FrameType getType() {

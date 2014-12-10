@@ -14,20 +14,20 @@
             android:id="@+id/garbageCan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             android:layout_centerHorizontal="true"
             android:textColor="#000"
             android:textSize="25dp"
             android:text="@string/remove"
             android:alpha="0"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="25dp"
             />
 
     <com.cisco.telepresence.sandbox.stage.view.ScreenView
             android:id="@+id/singlescreen"
             android:layout_width="950dp"
-            android:layout_height="534dp"
-            android:background="#5999"
+            android:layout_height="520dp"
+            android:background="#5BBB"
             android:layout_below="@id/garbageCan"
             android:layout_centerHorizontal="true"
             />
@@ -59,13 +59,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="25dp"
             android:layout_below="@id/singlescreen"
     >
         <ImageView
-                android:id="@+id/tray_button"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:id="@+id/share_button"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_gravity="center"
                 android:background="@drawable/cc_button_black"
                 android:src="@drawable/cc_add"
@@ -82,8 +82,8 @@
     <HorizontalScrollView
             android:id="@+id/tray_frame"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="#C000"
+            android:layout_height="125dp"
+            android:background="#DBBB"
             android:layout_alignParentBottom="true"
             android:visibility="gone"
 

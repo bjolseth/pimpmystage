@@ -13,7 +13,7 @@ public class SimulatedCodec implements CodecInterface {
         int initialParticipants = 4;
         List<Call> calls = new ArrayList<Call>();
 
-        String[] names = {"meeting1", "meeting2", "meeting3", "presentation1"};
+        String[] names = {"Bonus", "Licorice", "Kvikklunsj", "Fandango"};
 
         for (int i=0; i<initialParticipants; i++) {
             Call call = new Call(i+1, names[i]);
@@ -27,7 +27,7 @@ public class SimulatedCodec implements CodecInterface {
         List<Frame> frames = new ArrayList<Frame>();
         int i=0;
         for (Call call : getCalls()) {
-            Frame.FrameType type = i == 3 ? Frame.FrameType.LOCAL_PRESENTATATION : Frame.FrameType.VIDEO;
+            Frame.FrameType type = i == 0 ? Frame.FrameType.LOCAL_PRESENTATATION : Frame.FrameType.VIDEO;
             Frame frame = new Frame(call.getCallId(), type,
                     2000, 2000, i*1000, i*1000, call.getName(), i+1);
             frames.add(frame);

@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.util.Avatars;
 import com.cisco.telepresence.sandbox.stage.util.ImageBlur;
 
 public class FrameView extends RelativeLayout {
@@ -34,24 +35,7 @@ public class FrameView extends RelativeLayout {
     private void styleAvatar(Frame.FrameType type, String name) {
         ImageView img = (ImageView) findViewById(R.id.avatar_icon);
 
-        int image = R.drawable.avatar_camera;
-        if (type == Frame.FrameType.SELFVIEW)
-            image = R.drawable.avatar_camera;
-        else if (type == Frame.FrameType.VIDEO)
-            image = R.drawable.avatar_single;
-        else if (type == Frame.FrameType.LOCAL_PRESENTATATION)
-            image = R.drawable.avatar_pc;
-
-        if (name.equalsIgnoreCase("meeting1"))
-            image = R.drawable.meeting1;
-        else if (name.equalsIgnoreCase("meeting2"))
-            image = R.drawable.meeting2;
-        else if (name.equalsIgnoreCase("meeting3"))
-            image = R.drawable.meeting3;
-        else if (name.equalsIgnoreCase("presentation1"))
-            image = R.drawable.presentation1;
-        else if (name.equalsIgnoreCase("team"))
-            image = R.drawable.team_photo;
+        int image = Avatars.getAvatarImageId(name, type);
 
         img.setImageResource(image);
 //        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), image);

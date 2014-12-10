@@ -119,6 +119,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         FrameView view = new FrameView(screenView.getContext(), frame, screenView.getScaleWidth(), screenView.getScaleHeight());
         screenView.addFrame(view);
         view.setOnTouchListener(touchListener);
+        view.setOnDragListener(onDragListener);
         layoutDirector.updatePositions();
     }
 
