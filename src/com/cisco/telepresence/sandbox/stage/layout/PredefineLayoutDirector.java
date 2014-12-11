@@ -18,7 +18,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
     private static final String TAG = "pimpmystage";
     private enum LayoutFamily {Prominent, Overlay, Equal, Single};
     private List<FrameView> frames;
-    private LayoutFamily currentFamily = LayoutFamily.Overlay;
 
     private final float OverlayPiPHeightPercent = 0.20f;
     private final float MinimumsEqualPercent = 0.49f;
@@ -26,18 +25,16 @@ public class PredefineLayoutDirector implements LayoutDirector{
     private final float TriggerPointOverlayPercent = 0.80f;
     private final float TriggerPointSinglePercent = 1.06f;
 
-    private float currentBigPipPercent = 0.7f;
+    private float currentBigPipPercent = 1.0f;
+    private LayoutFamily currentFamily = LayoutFamily.Overlay;
 
     public PredefineLayoutDirector(ScreenView screenView) {
         this.screenView = screenView;
         frames = screenView.getFrameViews();
 
-        // set overlay as default
-        currentBigPipPercent = TriggerPointOverlayPercent + 0.01f;
         if (! frames.isEmpty())
             setMainView(frames.get(0));
 
-        currentFamily = LayoutFamily.Overlay;
     }
 
     private FrameView getMainView() {
