@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewParent;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.StageNavigator;
@@ -39,6 +40,15 @@ public class TopMenuHandler implements View.OnDragListener {
 
             }
         });
+    }
+
+    public void setLayoutMode(boolean isLocked) {
+        ImageView lock = (ImageView) stage.findViewById(R.id.layout_button);
+        if (isLocked)
+            lock.setImageResource(R.drawable.locked);
+        else
+            lock.setImageResource(R.drawable.unlocked);
+
     }
 
     @Override

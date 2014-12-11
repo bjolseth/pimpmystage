@@ -32,8 +32,9 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
     private int lastSystemUIVisibility;
     private Handler enterLeanBackTimer;
     private StageNavigator stageNavigator;
+    private TopMenuHandler topMenuHandler;
 
-    public StageController(Context context, View stage) {
+    public StageController(Context context, View stage, boolean freeLayout) {
         this.context = context;
         this.stage = stage;
 
@@ -41,13 +42,14 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         stageNavigator = new StageNavigator((ViewGroup) stage.findViewById(R.id.screens));
         codec = new SimulatedCodec();
 
-        stage.findViewById(R.id.garbageCan).setOnDragListener(new TopMenuHandler(stage, stageNavigator));
+        topMenuHandler = new TopMenuHandler(stage, stageNavigator);
+        stage.findViewById(R.id.garbageCan).setOnDragListener(topMenuHandler);
         populateTray();
         setListeners();
 
-        createMonitor(StageNavigator.MONITOR_LEFT);
-        createMonitor(StageNavigator.MONITOR_MIDDLE);
-        createMonitor(StageNavigator.MONITOR_RIGHT);
+        createMonitor(StageNavigator.MONITOR_LEFT, freeLayout);
+        createMonitor(StageNavigator.MONITOR_MIDDLE, freeLayout);
+        createMonitor(StageNavigator.MONITOR_RIGHT, freeLayout);
 
         resetLeanBackTimer();
     }
@@ -84,7 +86,7 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         }
     }
 
-    private void createMonitor(final int monitorIndex) {
+    private void createMonitor(final int monitorIndex, boolean freeLayout) {
         int monitorViewId = R.id.singlescreen;
         if (monitorIndex == 0)
             monitorViewId = R.id.leftscreen;
@@ -96,8 +98,8 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         Screen screen = new Screen();
         screenView.setScreen(screen);
 
-        LayoutDirector director = new PredefineLayoutDirector(screenView);
-        //LayoutDirector director = new ManualLayoutDirector(screenView);
+        LayoutDirector director = freeLayout ? new ManualLayoutDirector(screenView) :
+                new PredefineLayoutDirector(screenView);
 
         screenPresenter = new ScreenPresenter(screenView, director);
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
@@ -118,6 +120,8 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
 //                director.updatePositions();
 //            }
 //        }, 500);
+
+        topMenuHandler.setLayoutMode(director instanceof PredefineLayoutDirector);
     }
 
 

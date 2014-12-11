@@ -22,7 +22,7 @@ public class StageWithCodec extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.stage);
+        setContentView(R.layout.stage_audiodemo);
 
         ScreenView screenView = (ScreenView) findViewById(R.id.singlescreen);
         createCodecFreeMode(screenView);

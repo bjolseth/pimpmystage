@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<AbsoluteLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/stage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/dunes_idefix"
+        android:animateLayoutChanges="false"
+        android:clipChildren="false"
+        >
+
+    <AbsoluteLayout
+            android:id="@+id/screens"
+            android:layout_width="3000dp"
+            android:layout_x="-860dp"
+            android:layout_y="110dp"
+            android:layout_height="@dimen/screen_height_single"
+            android:background="#0200"
+    >
+
+
+
+        <com.cisco.telepresence.sandbox.stage.view.ScreenView
+                android:id="@+id/singlescreen"
+                android:layout_width="@dimen/screen_width_single"
+                android:layout_height="@dimen/screen_height_single"
+                android:background="@color/screen_background"
+                android:layout_x="1025dp"
+                android:layout_y="0dp"
+                />
+
+
+    </AbsoluteLayout>
+
+    <View
+            android:id="@+id/glass_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0000"
+          />
+
+</AbsoluteLayout>

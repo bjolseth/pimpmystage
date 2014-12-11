@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import com.cisco.telepresence.sandbox.R;
 
-public class StageWithoutCodec extends Activity
+public class StageWithoutCodecFreeLayout extends Activity
 {
 
     @Override
@@ -13,7 +13,7 @@ public class StageWithoutCodec extends Activity
         super.onCreate(savedInstanceState);
         View stage = View.inflate(this, R.layout.stage, null);
         setContentView(stage);
-        new StageController(this, stage, false);
+        new StageController(this, stage, true);
     }
 
 
