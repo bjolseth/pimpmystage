@@ -2,6 +2,9 @@ package com.cisco.telepresence.sandbox.stage.view;
 
 import android.view.DragEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
@@ -149,8 +152,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         // TODO need to make unique frame ids
         Frame.FrameType type = button.getType();
         Frame frame = new Frame(0, type, 4000, 4000, 0, 0, button.getName(), 1);
-        FrameView view = new FrameView(screenView.getContext(), frame, screenView.getScaleWidth(), screenView.getScaleHeight());
-        //Debug.debug("adding %s, %s", button.getName(), view.getBounds());
+        final FrameView view = new FrameView(screenView.getContext(), frame, screenView.getScaleWidth(), screenView.getScaleHeight());
+
+        if (type == Frame.FrameType.VIDEO)
+            view.animateCallingHack();
 
         addFrame(view);
     }

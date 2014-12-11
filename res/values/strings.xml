@@ -6,5 +6,6 @@
     <string name="garbagecan">Drag here to remove</string>
     <string name="remove">Remove</string>
     <string name="screen_help">Drag contacts or presentation to this monitor</string>
+    <string name="calling">Calling Dude 1</string>
 
 </resources>

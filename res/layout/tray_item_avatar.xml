@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/tray_item"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/presentation1"
+                android:layout_margin="10dp"
+        >
+    <TextView
+            android:id="@+id/tray_item_text"
+            android:textColor="#fff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/remove"
+            />
+
+</RelativeLayout>

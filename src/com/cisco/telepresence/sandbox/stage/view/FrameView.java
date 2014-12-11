@@ -3,6 +3,8 @@ package com.cisco.telepresence.sandbox.stage.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -28,6 +30,36 @@ public class FrameView extends RelativeLayout {
         setLayoutParams(layout);
         View.inflate(context, R.layout.avatar, this);
         styleAvatar(frame.getFrameType(), frame.getName());
+    }
+
+
+    public void animateCallingHack() {
+        // Hack to fake dialling
+        Animation pulse = AnimationUtils.loadAnimation(getContext(), R.anim.pulse);
+        ((ImageView) findViewById(R.id.calling_icon)).setImageResource(Avatars.getRoundAvatar(frame.getName()));
+        findViewById(R.id.calling_icon).startAnimation(pulse);
+
+        pulse.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                findViewById(R.id.avatar_icon).setVisibility(View.GONE);
+                findViewById(R.id.avatar_text).setVisibility(View.GONE);
+                findViewById(R.id.calling_icon).setVisibility(View.VISIBLE);
+                findViewById(R.id.calling_text).setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                findViewById(R.id.calling_icon).setVisibility(View.GONE);
+                findViewById(R.id.calling_text).setVisibility(View.GONE);
+                findViewById(R.id.avatar_icon).setVisibility(View.VISIBLE);
+                findViewById(R.id.avatar_text).setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
     }
 
     private void styleAvatar(Frame.FrameType type, String name) {

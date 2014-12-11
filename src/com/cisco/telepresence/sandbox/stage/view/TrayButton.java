@@ -1,7 +1,6 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,14 +17,15 @@ public class TrayButton extends LinearLayout {
         super(context);
         this.type = type;
         this.name = name;
-        inflate(context, R.layout.tray_item, this);
+        boolean isPresentation = (type == Frame.FrameType.LOCAL_PRESENTATATION);
+        int layout = isPresentation ? R.layout.tray_item_presentation : R.layout.tray_item_avatar;
+        inflate(context, layout, this);
+
         setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         ((TextView) findViewById(R.id.tray_item_text)).setText(name);
 
-        int image = (type == Frame.FrameType.LOCAL_PRESENTATATION ?
-                Avatars.getAvatarImageId(name, type)
-                : Avatars.getRoundAvatar(name));
+        int image = (isPresentation ? Avatars.getAvatarImageId(name, type) : Avatars.getRoundAvatar(name));
 
         findViewById(R.id.tray_item).setBackgroundResource(image);
     }

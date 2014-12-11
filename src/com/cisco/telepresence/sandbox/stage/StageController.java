@@ -112,14 +112,6 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         CodecCustomLayoutHelper layoutHandler = new CodecCustomLayoutHelper(codec, screenView);
         screenPresenter.setLayoutChangeHandler(layoutHandler);
 
-        // Need to update this screenview after size has been determined
-        // There's probably a better way to do this without timer
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                director.updatePositions();
-//            }
-//        }, 500);
 
         topMenuHandler.setLayoutMode(director instanceof PredefineLayoutDirector);
     }
