@@ -22,7 +22,12 @@ public class TrayButton extends LinearLayout {
         setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         ((TextView) findViewById(R.id.tray_item_text)).setText(name);
-        findViewById(R.id.tray_item).setBackgroundResource(Avatars.getAvatarImageId(name, type));
+
+        int image = (type == Frame.FrameType.LOCAL_PRESENTATATION ?
+                Avatars.getAvatarImageId(name, type)
+                : Avatars.getRoundAvatar(name));
+
+        findViewById(R.id.tray_item).setBackgroundResource(image);
     }
 
     public Frame.FrameType getType() {

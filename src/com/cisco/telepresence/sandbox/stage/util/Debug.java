@@ -9,4 +9,8 @@ public class Debug {
     public static void debug(String message, Object ... args) {
         Log.i(TAG, String.format(message, args));
     }
+
+    public static void debug(Object message) {
+        Log.i(TAG, message.toString());
+    }
 }
