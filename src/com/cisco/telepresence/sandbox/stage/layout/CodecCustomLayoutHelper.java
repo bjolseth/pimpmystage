@@ -8,7 +8,7 @@ import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
-public class LayoutChangeHandler {
+public class CodecCustomLayoutHelper {
 
     private CodecInterface codec;
     private ScreenView screenView;
@@ -17,7 +17,7 @@ public class LayoutChangeHandler {
     private static final int LayoutId = 1;
     private static final int MonitorOutput = 1;
 
-    public LayoutChangeHandler(CodecInterface codec, ScreenView screenView) {
+    public CodecCustomLayoutHelper(CodecInterface codec, ScreenView screenView) {
         this.codec = codec;
         this.screenView = screenView;
         initLayoutWithFramesFromCodec();

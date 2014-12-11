@@ -11,8 +11,9 @@ import android.view.animation.AnimationUtils;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
 import com.cisco.telepresence.sandbox.stage.codec.SimulatedCodec;
-import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
+import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
+import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
@@ -23,7 +24,7 @@ import com.cisco.telepresence.sandbox.stage.view.TrayButton;
 
 public class StageController implements  View.OnTouchListener, View.OnSystemUiVisibilityChangeListener {
 
-    public static final int LEAN_BACK_TIMEOUT = 10000;
+    public static final int LEAN_BACK_TIMEOUT = 20000;
     private View stage;
     private Context context;
     private ScreenPresenter screenPresenter;
@@ -101,7 +102,8 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         Screen screen = new Screen();
         screenView.setScreen(screen);
 
-        LayoutDirector director = new PredefineLayoutDirector(screenView);
+        //LayoutDirector director = new PredefineLayoutDirector(screenView);
+        LayoutDirector director = new ManualLayoutDirector(screenView);
 
         screenPresenter = new ScreenPresenter(screenView, director);
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
@@ -111,7 +113,7 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
             }
         });
 
-        LayoutChangeHandler layoutHandler = new LayoutChangeHandler(codec, screenView);
+        CodecCustomLayoutHelper layoutHandler = new CodecCustomLayoutHelper(codec, screenView);
         screenPresenter.setLayoutChangeHandler(layoutHandler);
 
         // Need to update this screenview after size has been determined

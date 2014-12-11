@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
 import com.cisco.telepresence.sandbox.stage.codec.RealCodec;
-import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
+import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
@@ -28,12 +28,11 @@ public class StageWithCodec extends Activity
         createCodecFreeMode(screenView);
     }
 
-
     private void createCodecFreeMode(ScreenView screenView) {
         CodecInterface codec = new RealCodec();
 
         LayoutDirector director = new ManualLayoutDirector(screenView);
-        LayoutChangeHandler layoutHandler = new LayoutChangeHandler(codec, screenView);
+        CodecCustomLayoutHelper layoutHandler = new CodecCustomLayoutHelper(codec, screenView);
         List<Frame> frames = codec.getFrames();
         Screen screen = new Screen();
         screen.setFrames(frames);
@@ -41,7 +40,6 @@ public class StageWithCodec extends Activity
 
         ScreenPresenter p = new ScreenPresenter(screenView, director);
         p.setLayoutChangeHandler(layoutHandler);
-
     }
 
 }

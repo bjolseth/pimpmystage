@@ -44,7 +44,6 @@ public class ManualLayoutDirector implements LayoutDirector {
 
     @Override
     public void updatePositions() {
-
     }
 
     private void keepViewInsideScreen(FrameView view) {

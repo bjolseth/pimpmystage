@@ -1,11 +1,8 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.AbsoluteLayout;
-import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 

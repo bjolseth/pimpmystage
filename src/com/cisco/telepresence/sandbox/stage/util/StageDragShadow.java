@@ -24,6 +24,8 @@ public class StageDragShadow extends View.DragShadowBuilder {
         int height = (int) (WIDTH * 9./16);
         shadow.setBounds(0, 0, WIDTH, height);
         size.set(WIDTH, height);
+
+        // TODO would like to *not* center but that is not trivial to do
         touch.set(WIDTH / 2, height / 2);
     }
 

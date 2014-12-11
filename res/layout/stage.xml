@@ -87,8 +87,6 @@
 
     </RelativeLayout>
 
-
-
     <AbsoluteLayout
             android:id="@+id/screens"
             android:layout_width="3000dp"
@@ -124,10 +122,7 @@
                 android:layout_y="0dp"
                 />
 
-
     </AbsoluteLayout>
-
-
 
     <View
             android:id="@+id/glass_pane"
