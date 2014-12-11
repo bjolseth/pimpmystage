@@ -1,4 +1,4 @@
-package com.cisco.telepresence.sandbox.stage;
+package com.cisco.telepresence.sandbox.stage.codec;
 
 import com.cisco.telepresence.sandbox.stage.model.Call;
 import com.cisco.telepresence.sandbox.stage.model.Frame;

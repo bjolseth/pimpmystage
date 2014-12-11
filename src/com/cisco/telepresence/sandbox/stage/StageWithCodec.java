@@ -2,13 +2,12 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
+import com.cisco.telepresence.sandbox.stage.codec.RealCodec;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
-import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;

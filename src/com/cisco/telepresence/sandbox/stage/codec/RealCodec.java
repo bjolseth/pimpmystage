@@ -1,7 +1,6 @@
-package com.cisco.telepresence.sandbox.stage;
+package com.cisco.telepresence.sandbox.stage.codec;
 
 import android.os.RemoteException;
-import android.util.Log;
 import com.cisco.telepresence.sandbox.stage.model.Call;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.system.ServiceProvider;

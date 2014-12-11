@@ -13,6 +13,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
+import com.cisco.telepresence.sandbox.stage.codec.SimulatedCodec;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;

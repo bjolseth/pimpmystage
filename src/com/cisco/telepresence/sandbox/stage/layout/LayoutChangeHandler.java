@@ -3,7 +3,7 @@ package com.cisco.telepresence.sandbox.stage.layout;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.util.Log;
-import com.cisco.telepresence.sandbox.stage.CodecInterface;
+import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
