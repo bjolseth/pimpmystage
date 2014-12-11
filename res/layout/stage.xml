@@ -19,18 +19,22 @@
             >
 
         <!-- note the views have to be visible (but alpha can be 0) to be able to receive drag events -->
-        <TextView
-                android:id="@+id/garbageCan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <RelativeLayout
+                android:id="@+id/topbar"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:layout_marginTop="25dp"
-                android:layout_centerHorizontal="true"
-                android:textColor="#000"
-                android:textSize="25dp"
-                android:text="@string/remove"
-                android:alpha="0"
-                android:layout_marginBottom="25dp"
-                />
+                >
+            <ImageView
+                    android:id="@+id/garbageCan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/garbage"
+                    android:alpha="0"
+                    android:layout_centerInParent="true"
+                    />
+        </RelativeLayout>
 
         <LinearLayout
                 android:id="@+id/callcontrolbar"

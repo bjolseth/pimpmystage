@@ -1,14 +1,18 @@
 package com.cisco.telepresence.sandbox.stage.util;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Rect;
+import android.view.View;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 
 public class Animations {
 
     private static final int ANIMATION_TIME = 200;
 
-    public static void animateFrame(final FrameView frame, Rect newPos) {
+    public static void animateFrameSizeAndPos(final FrameView frame, Rect newPos) {
         ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f);
         anim.setDuration(ANIMATION_TIME);
 
@@ -38,4 +42,15 @@ public class Animations {
         anim.start();
     }
 
+    public static void animateScaling(View view, float startScale,float endScale) {
+        AnimatorSet set = new AnimatorSet();
+        Animator scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, startScale, endScale);
+        Animator scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, startScale, endScale);
+        Animator moveX = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, view.getTranslationX(), 0);
+
+        set.play(moveX).with(scaleX).with(scaleY);
+        set.setDuration(ANIMATION_TIME);
+        set.start();
+
+    }
 }

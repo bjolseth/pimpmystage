@@ -2,12 +2,15 @@ package com.cisco.telepresence.sandbox.stage.view;
 
 import android.view.DragEvent;
 import android.view.View;
-import com.cisco.telepresence.sandbox.R;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
+import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
+import com.cisco.telepresence.sandbox.stage.util.StageDragShadow;
 
 
 public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, View.OnDragListener {
@@ -93,9 +96,17 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public void onLongPress(View view) {
         if (view instanceof FrameView) {
-            View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
+            View.DragShadowBuilder shadow = createShadow((FrameView) view);
             view.startDrag(null, shadow, view, 0);
         }
+    }
+
+    private View.DragShadowBuilder createShadow(FrameView view) {
+        boolean useSmallPips = layoutDirector instanceof PredefineLayoutDirector;
+        View.DragShadowBuilder shadow = (useSmallPips ?
+                new StageDragShadow(view)
+                : new View.DragShadowBuilder(view));
+        return shadow;
     }
 
     @Override

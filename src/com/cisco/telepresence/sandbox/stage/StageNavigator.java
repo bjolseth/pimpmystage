@@ -27,40 +27,6 @@ public class StageNavigator {
         isZoomedOut = stage.getScaleX() < 1;
     }
 
-    public void demo() {
-        demoStep++;
-
-        if (demoStep == 1) {
-            zoomOut();
-        }
-        if (demoStep == 2) {
-            focusOnView(0);
-        }
-        if (demoStep == 3) {
-            focusOnView(1);
-        }
-        if (demoStep == 4) {
-            focusOnView(2);
-        }
-        if (demoStep == 5) {
-            focusOnView(0);
-        }
-        if (demoStep == 6) {
-            zoomOut();
-        }
-        if (demoStep == 7) {
-            focusOnView(1);
-        }
-        if (demoStep == 8) {
-            zoomOut();
-        }
-        if (demoStep == 9) {
-            focusOnView(2);
-            demoStep = 0;
-        }
-
-    }
-
     public void zoomOut() {
         if (isZoomedOut)
             return;

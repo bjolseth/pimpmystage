@@ -2,34 +2,30 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
 import com.cisco.telepresence.sandbox.stage.codec.SimulatedCodec;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
+import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
-import com.cisco.telepresence.sandbox.stage.view.FrameView;
+import com.cisco.telepresence.sandbox.stage.topmenu.TopMenuHandler;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
 
-public class StageController implements View.OnDragListener, View.OnTouchListener, View.OnSystemUiVisibilityChangeListener {
+public class StageController implements  View.OnTouchListener, View.OnSystemUiVisibilityChangeListener {
 
     public static final int LEAN_BACK_TIMEOUT = 10000;
     private View stage;
     private Context context;
-    private PredefineLayoutDirector director;
     private ScreenPresenter screenPresenter;
     private CodecInterface codec;
     private int lastSystemUIVisibility;
@@ -44,7 +40,7 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         stageNavigator = new StageNavigator((ViewGroup) stage.findViewById(R.id.screens));
         codec = new SimulatedCodec();
 
-        stage.findViewById(R.id.garbageCan).setOnDragListener(this);
+        stage.findViewById(R.id.garbageCan).setOnDragListener(new TopMenuHandler(stage));
         populateTray();
         setListeners();
 
@@ -105,7 +101,7 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         Screen screen = new Screen();
         screenView.setScreen(screen);
 
-        director = new PredefineLayoutDirector(screenView);
+        LayoutDirector director = new PredefineLayoutDirector(screenView);
 
         screenPresenter = new ScreenPresenter(screenView, director);
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
@@ -120,41 +116,14 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
 
         // Need to update this screenview after size has been determined
         // There's probably a better way to do this without timer
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                director.updatePositions();
-            }
-        }, 500);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                director.updatePositions();
+//            }
+//        }, 500);
     }
 
-    @Override
-    public boolean onDrag(View dropTarget, DragEvent dragEvent) {
-
-        Object item = dragEvent.getLocalState();
-
-        if (dragEvent.getAction() == DragEvent.ACTION_DRAG_STARTED)
-            stage.findViewById(R.id.garbageCan).setAlpha(1.0f);
-        else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENDED)
-            stage.findViewById(R.id.garbageCan).setAlpha(0);
-        else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_ENTERED) {
-            if (dropTarget.getId() == R.id.garbageCan)
-                ((TextView) dropTarget).setTextColor(Color.RED);
-        }
-        else if (dragEvent.getAction() == DragEvent.ACTION_DRAG_EXITED) {
-            if (dropTarget.getId() == R.id.garbageCan)
-                ((TextView) dropTarget).setTextColor(Color.BLACK);
-        }
-        else if (dragEvent.getAction() == DragEvent.ACTION_DROP) {
-            if (dropTarget.getId() == R.id.garbageCan) {
-                ((TextView) dropTarget).setTextColor(Color.BLACK);
-                if (item instanceof FrameView)
-                    removeFrame((FrameView) item);
-            }
-        }
-
-        return true;
-    }
 
     private void showTray(final boolean show) {
         final View tray = stage.findViewById(R.id.tray_frame);
@@ -186,14 +155,6 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
 
     }
 
-    private void removeFrame(FrameView frame) {
-        ViewParent parent = frame.getParent();
-        if (parent instanceof ScreenView) {
-            ((ScreenView) parent).remove(frame);
-        }
-        //screenViewMiddle.remove(frame);
-        director.updatePositions();
-    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {

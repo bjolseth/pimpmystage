@@ -1,8 +1,6 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.view.View;
 import android.widget.AbsoluteLayout;
@@ -12,11 +10,11 @@ import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.util.Avatars;
-import com.cisco.telepresence.sandbox.stage.util.ImageBlur;
 
 public class FrameView extends RelativeLayout {
 
     private final Frame frame;
+    private int imageResourceId;
 
     public FrameView(Context context, Frame frame, float scaleX, float scaleY) {
         super(context);
@@ -35,15 +33,19 @@ public class FrameView extends RelativeLayout {
     private void styleAvatar(Frame.FrameType type, String name) {
         ImageView img = (ImageView) findViewById(R.id.avatar_icon);
 
-        int image = Avatars.getAvatarImageId(name, type);
+        imageResourceId = Avatars.getAvatarImageId(name, type);
 
-        img.setImageResource(image);
-//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), image);
+        img.setImageResource(imageResourceId);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageResourceId);
 //        Bitmap blur = ImageBlur.blurBitmap(getContext(), bitmap);
 //        img.setImageBitmap(blur);
 
         TextView text = (TextView) findViewById(R.id.avatar_text);
         text.setText(name);
+    }
+
+    public int getAvatarImageResource() {
+        return imageResourceId;
     }
 
     // Cloned view that can be used to move and resize during gestures

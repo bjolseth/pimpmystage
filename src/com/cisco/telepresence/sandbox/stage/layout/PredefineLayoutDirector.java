@@ -1,12 +1,9 @@
 package com.cisco.telepresence.sandbox.stage.layout;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
-import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
@@ -130,10 +127,10 @@ public class PredefineLayoutDirector implements LayoutDirector{
         Rect r4 = new Rect(xCenter, yCenter, xCenter*2, yCenter*2);
 
         if (animate) {
-            Animations.animateFrame(frames.get(0), r1);
-            Animations.animateFrame(frames.get(1), r2);
-            Animations.animateFrame(frames.get(2), r3);
-            Animations.animateFrame(frames.get(3), r4);
+            Animations.animateFrameSizeAndPos(frames.get(0), r1);
+            Animations.animateFrameSizeAndPos(frames.get(1), r2);
+            Animations.animateFrameSizeAndPos(frames.get(2), r3);
+            Animations.animateFrameSizeAndPos(frames.get(3), r4);
         }
         else {
             frames.get(0).setBounds(r1);
@@ -244,8 +241,8 @@ public class PredefineLayoutDirector implements LayoutDirector{
         Rect bounds1 = view1.getBounds();
         Rect bounds2 = view2.getBounds();
 
-        Animations.animateFrame(view1, bounds2);
-        Animations.animateFrame(view2, bounds1);
+        Animations.animateFrameSizeAndPos(view1, bounds2);
+        Animations.animateFrameSizeAndPos(view2, bounds1);
     }
 
 
@@ -271,7 +268,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
             FrameView pip = frames.get(i);
             Rect boundsPip = new Rect(xPip, yPip, xPip + pipWidth, yPip + pipHeight);
             if (animated)
-                Animations.animateFrame(pip, boundsPip);
+                Animations.animateFrameSizeAndPos(pip, boundsPip);
             else
                 pip.setBounds(boundsPip);
             xPip += pipWidth;
