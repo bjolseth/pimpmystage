@@ -21,8 +21,10 @@ public class Avatars {
             image = R.drawable.meeting2;
         else if (name.equalsIgnoreCase("fandango"))
             image = R.drawable.meeting3;
-        else if (name.equalsIgnoreCase("bonus"))
+        else if (name.equalsIgnoreCase("hdmi"))
             image = R.drawable.presentation1;
+        else if (name.equalsIgnoreCase("dvi"))
+            image = R.drawable.yosemite;
         else if (name.equalsIgnoreCase("team"))
             image = R.drawable.team_photo;
 
