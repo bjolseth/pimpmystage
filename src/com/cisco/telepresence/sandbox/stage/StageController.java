@@ -57,6 +57,7 @@ public class StageController implements  View.OnTouchListener {
                 showTray(true);
             }
         });
+
         stage.findViewById(R.id.glass_pane).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -71,8 +72,8 @@ public class StageController implements  View.OnTouchListener {
             @Override
             public void leanBackModeChanged(boolean isInLeanBackMode) {
                 stage.findViewById(R.id.callcontrolbar).setVisibility(isInLeanBackMode ? View.INVISIBLE: View.VISIBLE);
+                stage.findViewById(R.id.topbar).setVisibility(isInLeanBackMode ? View.INVISIBLE : View.VISIBLE);
                 showTray(false);
-
             }
         });
 
