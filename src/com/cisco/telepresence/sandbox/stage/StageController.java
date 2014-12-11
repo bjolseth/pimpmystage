@@ -8,6 +8,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -16,13 +17,10 @@ import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
-import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
-
-import java.util.List;
 
 public class StageController implements View.OnDragListener, View.OnTouchListener, View.OnSystemUiVisibilityChangeListener {
 
@@ -32,7 +30,6 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     private PredefineLayoutDirector director;
     private ScreenPresenter screenPresenter;
     private CodecInterface codec;
-    private ScreenView screenView;
     private int lastSystemUIVisibility;
     private Handler enterLeanBackTimer;
     private StageNavigator stageNavigator;
@@ -40,17 +37,22 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     public StageController(Context context, View stage) {
         this.context = context;
         this.stage = stage;
-        screenView = (ScreenView) stage.findViewById(R.id.singlescreen);
+
         enterLeanBackTimer = new Handler();
         stageNavigator = new StageNavigator((ViewGroup) stage.findViewById(R.id.screens));
-        createFakeCodecPredefinedLayoutMode(screenView);
+        codec = new SimulatedCodec();
 
         stage.findViewById(R.id.garbageCan).setOnDragListener(this);
         populateTray();
         setListeners();
 
+        createMonitor(StageNavigator.MONITOR_LEFT);
+        createMonitor(StageNavigator.MONITOR_MIDDLE);
+        createMonitor(StageNavigator.MONITOR_RIGHT);
+
         resetLeanBackTimer();
     }
+
 
     private void setListeners() {
         stage.findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener() {
@@ -89,12 +91,16 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         }
     }
 
-    private void createFakeCodecPredefinedLayoutMode(ScreenView screenView) {
-        codec = new SimulatedCodec();
+    private void createMonitor(final int monitorIndex) {
+        int monitorViewId = R.id.singlescreen;
+        if (monitorIndex == 0)
+            monitorViewId = R.id.leftscreen;
+        else if (monitorIndex == 2)
+            monitorViewId = R.id.rightscreen;
 
-        List<Frame> frames = codec.getFrames();
+        ScreenView screenView = (ScreenView) stage.findViewById(monitorViewId);
+
         Screen screen = new Screen();
-        screen.setFrames(frames);
         screenView.setScreen(screen);
 
         director = new PredefineLayoutDirector(screenView);
@@ -103,8 +109,7 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
             @Override
             public void monitorSelected() {
-                int MiddleMonitor = 1;
-                stageNavigator.focusOnView(MiddleMonitor);
+                stageNavigator.focusOnView(monitorIndex);
             }
         });
 
@@ -180,7 +185,11 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     }
 
     private void removeFrame(FrameView frame) {
-        screenView.remove(frame);
+        ViewParent parent = frame.getParent();
+        if (parent instanceof ScreenView) {
+            ((ScreenView) parent).remove(frame);
+        }
+        //screenViewMiddle.remove(frame);
         director.updatePositions();
     }
 

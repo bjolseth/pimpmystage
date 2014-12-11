@@ -7,9 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
+
+/**
+ * For now, just prototyped to support fixed 3 monitor setup
+ */
 public class StageNavigator {
 
-    private final static int NumberOfScreens = 3;
+    public static final int MONITOR_LEFT = 0, MONITOR_MIDDLE = 1, MONITOR_RIGHT = 2;
     private ViewGroup stage;
     private static final int AnimationTime = 200;
     private static final int ScreenOffset = 1015;
@@ -77,9 +81,9 @@ public class StageNavigator {
         float startScale = stage.getScaleX();
 
         float endX = 0;
-        if (view == 0)
+        if (view == MONITOR_LEFT)
             endX = ScreenOffset;
-        else if (view == 2)
+        else if (view == MONITOR_RIGHT)
             endX = -ScreenOffset;
 
         AnimatorSet set = new AnimatorSet();

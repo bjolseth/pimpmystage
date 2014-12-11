@@ -37,7 +37,9 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
         // set overlay as default
         currentBigPipPercent = TriggerPointOverlayPercent + 0.01f;
-        setMainView(frames.get(0));
+        if (! frames.isEmpty())
+            setMainView(frames.get(0));
+
         currentFamily = LayoutFamily.Overlay;
     }
 
