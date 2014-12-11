@@ -6,17 +6,39 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
+import com.cisco.telepresence.sandbox.stage.StageNavigator;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
 public class TopMenuHandler implements View.OnDragListener {
 
     private final View stage;
+    private final StageNavigator stageNavigator;
 
-    public TopMenuHandler(View stage) {
+    public TopMenuHandler(View stage, StageNavigator stageNavigator) {
         this.stage = stage;
+        this.stageNavigator = stageNavigator;
+
+        setupListeners(stage);
+    }
+
+    private void setupListeners(View stage) {
+        stage.findViewById(R.id.zoom_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stageNavigator.zoomOut();
+            }
+        });
+        stage.findViewById(R.id.layout_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Debug.debug("click layout");
+
+            }
+        });
     }
 
     @Override

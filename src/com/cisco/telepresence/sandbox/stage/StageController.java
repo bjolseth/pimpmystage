@@ -41,7 +41,7 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         stageNavigator = new StageNavigator((ViewGroup) stage.findViewById(R.id.screens));
         codec = new SimulatedCodec();
 
-        stage.findViewById(R.id.garbageCan).setOnDragListener(new TopMenuHandler(stage));
+        stage.findViewById(R.id.garbageCan).setOnDragListener(new TopMenuHandler(stage, stageNavigator));
         populateTray();
         setListeners();
 
@@ -71,12 +71,6 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
             }
         });
 
-        stage.findViewById(R.id.zoom_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stageNavigator.zoomOut();
-            }
-        });
 
         ((Activity) context).getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
     }
@@ -102,8 +96,8 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         Screen screen = new Screen();
         screenView.setScreen(screen);
 
-        //LayoutDirector director = new PredefineLayoutDirector(screenView);
-        LayoutDirector director = new ManualLayoutDirector(screenView);
+        LayoutDirector director = new PredefineLayoutDirector(screenView);
+        //LayoutDirector director = new ManualLayoutDirector(screenView);
 
         screenPresenter = new ScreenPresenter(screenView, director);
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
