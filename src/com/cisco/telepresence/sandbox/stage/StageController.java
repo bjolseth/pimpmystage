@@ -73,7 +73,7 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         stage.findViewById(R.id.zoom_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stageNavigator.demo();
+                stageNavigator.zoomOut();
             }
         });
 
@@ -100,6 +100,13 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
         director = new PredefineLayoutDirector(screenView);
 
         screenPresenter = new ScreenPresenter(screenView, director);
+        screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
+            @Override
+            public void monitorSelected() {
+                int MiddleMonitor = 1;
+                stageNavigator.focusOnView(MiddleMonitor);
+            }
+        });
 
         LayoutChangeHandler layoutHandler = new LayoutChangeHandler(codec, screenView);
         screenPresenter.setLayoutChangeHandler(layoutHandler);

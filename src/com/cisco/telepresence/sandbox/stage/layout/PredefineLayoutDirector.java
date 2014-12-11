@@ -69,7 +69,7 @@ public class PredefineLayoutDirector implements LayoutDirector{
         else
             percent = Math.max(0.65f, percent);
 
-        Debug.debug("Set percent ratio: %.2f", percent);
+        //Debug.debug("Set percent ratio: %.2f", percent);
         currentBigPipPercent = percent;
         updatePositions();
     }

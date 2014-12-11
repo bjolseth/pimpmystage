@@ -6,6 +6,7 @@ import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
 
@@ -18,6 +19,11 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     private LayoutChangeHandler layoutChangeHandler;
     private View.OnTouchListener touchListener;
     private View.OnDragListener onDragListener;
+    private MonitorListener monitorListener;
+
+    public interface MonitorListener {
+        void monitorSelected();
+    }
 
 
     public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
@@ -28,6 +34,11 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         setTouchListenerOnAllFrames(screenView, multiTouchListener);
         setDragListenerOnAllFrames(screenView, this);
         setManualDragListenerOnScreenView(screenView, this);
+        screenView.setOnTouchListener(multiTouchListener);
+    }
+
+    public void setMonitorSelectedListener(MonitorListener listener) {
+        monitorListener = listener;
     }
 
     public void setLayoutChangeHandler(LayoutChangeHandler handler) {
@@ -60,6 +71,9 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onScaleView(View view, float scale) {
+        if (!(view  instanceof FrameView))
+            return;
+
         layoutDirector.scaleView(view, scale);
         if (view instanceof FrameView && layoutChangeHandler != null)
             layoutChangeHandler.frameHasChanged((FrameView) view);
@@ -67,6 +81,9 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onSingleTap(View view) {
+        Debug.debug("Single tap view  " + view);
+        if (monitorListener!= null)
+            monitorListener.monitorSelected();
     }
 
     @Override
@@ -75,8 +92,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onLongPress(View view) {
-        View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
-        view.startDrag(null, shadow, view, 0);
+        if (view instanceof FrameView) {
+            View.DragShadowBuilder shadow = new View.DragShadowBuilder(view);
+            view.startDrag(null, shadow, view, 0);
+        }
     }
 
     @Override
