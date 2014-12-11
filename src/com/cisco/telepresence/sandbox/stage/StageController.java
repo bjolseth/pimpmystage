@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutChangeHandler;
@@ -36,17 +35,20 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
     private ScreenView screenView;
     private int lastSystemUIVisibility;
     private Handler enterLeanBackTimer;
+    private StageNavigator stageNavigator;
 
     public StageController(Context context, View stage) {
         this.context = context;
         this.stage = stage;
         screenView = (ScreenView) stage.findViewById(R.id.singlescreen);
         enterLeanBackTimer = new Handler();
+        stageNavigator = new StageNavigator((ViewGroup) stage.findViewById(R.id.screens));
         createFakeCodecPredefinedLayoutMode(screenView);
 
         stage.findViewById(R.id.garbageCan).setOnDragListener(this);
         populateTray();
         setListeners();
+
         resetLeanBackTimer();
     }
 
@@ -65,6 +67,13 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
                 if (stage.findViewById(R.id.tray_frame).getVisibility() == View.VISIBLE)
                     showTray(false);
                 return false;
+            }
+        });
+
+        stage.findViewById(R.id.zoom_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stageNavigator.demo();
             }
         });
 
@@ -103,23 +112,6 @@ public class StageController implements View.OnDragListener, View.OnTouchListene
                 director.updatePositions();
             }
         }, 500);
-    }
-
-    private void setupLayoutSlider() {
-        SeekBar bar = ((SeekBar) stage.findViewById(R.id.layoutslider));
-        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-                director.setBigPipPercent((50 + value) / 100.f);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-        bar.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,5 +1,10 @@
 <resources>
 
-    <dimen name="somesize">16dp</dimen>
+    <dimen name="screen_width_single">950dp</dimen>
+    <dimen name="screen_height_single">520dp</dimen>
+
+    <dimen name="screen_width_multiple">475dp</dimen>
+    <dimen name="screen_height_multiple">260dp</dimen>
+
 
 </resources>

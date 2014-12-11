@@ -1,66 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<RelativeLayout
+<AbsoluteLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/stage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/dunes_idefix"
         android:animateLayoutChanges="false"
+        android:clipChildren="false"
         >
 
-    <TextView
-            android:id="@+id/garbageCan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_centerHorizontal="true"
-            android:textColor="#000"
-            android:textSize="25dp"
-            android:text="@string/remove"
-            android:alpha="0"
-            android:layout_marginBottom="25dp"
-            />
-
-    <com.cisco.telepresence.sandbox.stage.view.ScreenView
-            android:id="@+id/singlescreen"
-            android:layout_width="950dp"
-            android:layout_height="520dp"
-            android:background="#5BBB"
-            android:layout_below="@id/garbageCan"
-            android:layout_centerHorizontal="true"
-            />
-
-    <SeekBar
-            android:id="@+id/layoutslider"
-            android:layout_width="1067dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/singlescreen"
-            android:layout_centerHorizontal="true"
-            android:max="50"
-            android:progress="20"
-            android:visibility="gone"
-    />
-
-    <LinearLayout
-            android:id="@+id/callcontrolbar"
+    <!-- fullscreen transparent layer to make it possible with relative layout inside absolute top container -->
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="25dp"
-            android:layout_below="@id/singlescreen"
-    >
-        <ImageView
-                android:id="@+id/share_button"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_gravity="center"
-                android:background="@drawable/cc_button_black"
-                android:src="@drawable/cc_add"
+            android:layout_height="match_parent"
+            android:background="#0000"
+            >
+
+        <!-- note the views have to be visible (but alpha can be 0) to be able to receive drag events -->
+        <TextView
+                android:id="@+id/garbageCan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="#000"
+                android:textSize="25dp"
+                android:text="@string/remove"
+                android:alpha="0"
+                android:layout_marginBottom="25dp"
                 />
-    </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/callcontrolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="25dp"
+                >
+            <ImageView
+                    android:id="@+id/share_button"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/cc_button_black"
+                    android:src="@drawable/cc_add"
+                    />
+            <ImageView
+                    android:id="@+id/zoom_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/cc_button_black"
+                    android:src="@drawable/ic_action_search"
+                    />
+
+        </LinearLayout>
+
+        <HorizontalScrollView
+                android:id="@+id/tray_frame"
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                android:background="#DBBB"
+                android:layout_alignParentBottom="true"
+                android:visibility="gone"
+
+                >
+            <LinearLayout
+                    android:id="@+id/tray"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_alignParentBottom="true"
+                    >
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </RelativeLayout>
+
+
+
+    <AbsoluteLayout
+            android:id="@+id/screens"
+            android:layout_width="3000dp"
+            android:layout_x="-860dp"
+            android:layout_y="110dp"
+            android:layout_height="@dimen/screen_height_single"
+            android:background="#0200"
+    >
+
+        <com.cisco.telepresence.sandbox.stage.view.ScreenView
+                android:id="@+id/leftscreen"
+                android:layout_width="@dimen/screen_width_single"
+                android:layout_height="@dimen/screen_height_single"
+                android:background="@color/screen_background"
+                android:layout_x="10dp"
+                android:layout_y="0dp"
+                />
+
+        <com.cisco.telepresence.sandbox.stage.view.ScreenView
+                android:id="@+id/singlescreen"
+                android:layout_width="@dimen/screen_width_single"
+                android:layout_height="@dimen/screen_height_single"
+                android:background="@color/screen_background"
+                android:layout_x="1025dp"
+                android:layout_y="0dp"
+                />
+        <com.cisco.telepresence.sandbox.stage.view.ScreenView
+                android:id="@+id/rightscreen"
+                android:layout_width="@dimen/screen_width_single"
+                android:layout_height="@dimen/screen_height_single"
+                android:background="@color/screen_background"
+                android:layout_x="2040dp"
+                android:layout_y="0dp"
+                />
+
+
+    </AbsoluteLayout>
+
+
 
     <View
             android:id="@+id/glass_pane"
@@ -69,24 +132,4 @@
             android:background="#0000"
           />
 
-    <HorizontalScrollView
-            android:id="@+id/tray_frame"
-            android:layout_width="match_parent"
-            android:layout_height="125dp"
-            android:background="#DBBB"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-
-            >
-            <LinearLayout
-                    android:id="@+id/tray"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_alignParentBottom="true"
-            >
-            </LinearLayout>
-    </HorizontalScrollView>
-
-</RelativeLayout>
+</AbsoluteLayout>
