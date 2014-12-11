@@ -65,6 +65,10 @@ public class ScreenView extends AbsoluteLayout {
     }
 
     public void addFrame(FrameView view) {
+        // moved from another screen
+        if (view.getParent() != null)
+            ((ScreenView) view.getParent()).remove(view);
+
         addView(view);
         frames.add(view);
     }

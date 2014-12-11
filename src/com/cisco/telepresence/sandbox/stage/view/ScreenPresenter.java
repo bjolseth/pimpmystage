@@ -109,6 +109,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         View viewBeingDragged = (View) dragEvent.getLocalState();
 
         if (action == DragEvent.ACTION_DROP) {
+            Debug.debug("drop %s on %s", viewBeingDragged, dropTarget.getClass());
             if (viewBeingDragged instanceof FrameView)
                 onFrameViewDropped((FrameView) viewBeingDragged, dropTarget, dragEvent);
             else if (viewBeingDragged instanceof TrayButton) {
@@ -136,6 +137,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         // TODO need to make unique frame ids
         Frame frame = new Frame(0, Frame.FrameType.VIDEO, 0, 0, 2000, 2000, button.getName(), 1);
         FrameView view = new FrameView(screenView.getContext(), frame, screenView.getScaleWidth(), screenView.getScaleHeight());
+        addFrame(view);
+    }
+
+    private void addFrame(FrameView view) {
         screenView.addFrame(view);
         view.setOnTouchListener(touchListener);
         view.setOnDragListener(onDragListener);
@@ -146,21 +151,33 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     }
 
     private void onFrameViewDropped(FrameView frameView, View dropZoneView, DragEvent dragEvent) {
+
         if (dropZoneView instanceof FrameView) {
-            layoutDirector.swapPositionAndSize(frameView, (FrameView) dropZoneView);
+            // moved from other screen
+            if (dropZoneView.getParent() != frameView.getParent()) {
+                Debug.debug("frame dropped on frame in other screen. moving");
+                addFrame(frameView);
+            }
+            else {
+                layoutDirector.swapPositionAndSize(frameView, (FrameView) dropZoneView);
+            }
             if (layoutChangeHandler != null)
                 layoutChangeHandler.frameHasChanged(frameView);
         }
 
         else if (dropZoneView instanceof ScreenView) {
+            if (dropZoneView != frameView.getParent()) {
+                Debug.debug("frame dropped on other screen. moving");
+                addFrame(frameView);
+            }
             int dx = (int) dragEvent.getX() - dragStartX;
             int dy = (int) dragEvent.getY() - dragStartY;
             layoutDirector.moveView(frameView, dx, dy);
             if (layoutChangeHandler != null)
                 layoutChangeHandler.frameHasChanged(frameView);
-            isCurrentlyInDragMode = false;
         }
 
+        isCurrentlyInDragMode = false;
     }
 
 }
