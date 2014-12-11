@@ -12,7 +12,7 @@ public class SimulatedCodec implements CodecInterface {
     public List<Call> getCalls() {
         List<Call> calls = new ArrayList<Call>();
 
-        String[] names = {"HDMI", "DVI", "Licorice", "Kvikklunsj", "Fandango"};
+        String[] names = {"HDMI", "DVI", "Selfview", "Licorice", "Kvikklunsj", "Fandango"};
 
         for (int i=0; i < names.length; i++) {
             Call call = new Call(i+1, names[i]);

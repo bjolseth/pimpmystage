@@ -24,7 +24,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="25dp"
+                android:paddingRight="25dp"
+                android:paddingLeft="25dp"
                 >
+            <ImageView
+                    android:id="@+id/call_list_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/icon_call_list"
+                    android:alpha="0"
+                    android:layout_marginLeft="25dp"
+                    android:layout_centerInParent="true"
+                    />
+
             <ImageView
                     android:id="@+id/garbageCan"
                     android:layout_width="wrap_content"
@@ -32,8 +45,34 @@
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/garbage"
                     android:alpha="0"
+                    android:layout_marginLeft="25dp"
                     android:layout_centerInParent="true"
                     />
+            <ImageView
+                    android:id="@+id/zoom_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="25dp"
+                    android:src="@drawable/zoom_out"
+                    />
+            <ImageView
+                    android:id="@+id/camera_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/zoom_button"
+                    android:layout_marginLeft="25dp"
+                    android:src="@drawable/icon_camera"
+                    />
+            <ImageView
+                    android:id="@+id/layout_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/camera_button"
+                    android:layout_marginLeft="25dp"
+                    android:src="@drawable/locked"
+                    />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -52,15 +91,6 @@
                     android:layout_gravity="center"
                     android:background="@drawable/cc_button_black"
                     android:src="@drawable/cc_add"
-                    />
-            <ImageView
-                    android:id="@+id/zoom_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/cc_button_black"
-                    android:src="@drawable/ic_action_search"
                     />
 
         </LinearLayout>

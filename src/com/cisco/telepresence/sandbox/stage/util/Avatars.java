@@ -27,6 +27,8 @@ public class Avatars {
             image = R.drawable.yosemite;
         else if (name.equalsIgnoreCase("team"))
             image = R.drawable.team_photo;
+        else if (name.equalsIgnoreCase("selfview"))
+            image = R.drawable.selfview;
 
         return image;
     }
