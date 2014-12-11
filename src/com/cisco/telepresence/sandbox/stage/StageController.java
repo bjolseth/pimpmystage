@@ -22,38 +22,33 @@ import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
 
-public class StageController implements  View.OnTouchListener, View.OnSystemUiVisibilityChangeListener {
+public class StageController implements  View.OnTouchListener {
 
-    public static final int LEAN_BACK_TIMEOUT = 20000;
     private View stage;
     private Context context;
     private ScreenPresenter screenPresenter;
     private CodecInterface codec;
-    private int lastSystemUIVisibility;
-    private Handler enterLeanBackTimer;
     private StageNavigator stageNavigator;
     private TopMenuHandler topMenuHandler;
+    private LeanBackController leanBackController;
 
     public StageController(Context context, View stage, boolean freeLayout) {
         this.context = context;
         this.stage = stage;
 
-        enterLeanBackTimer = new Handler();
         stageNavigator = new StageNavigator((ViewGroup) stage.findViewById(R.id.screens));
         codec = new SimulatedCodec();
 
         topMenuHandler = new TopMenuHandler(stage, stageNavigator);
         stage.findViewById(R.id.garbageCan).setOnDragListener(topMenuHandler);
         populateTray();
+        leanBackController = new LeanBackController((Activity) context, stage);
         setListeners();
 
         createMonitor(StageNavigator.MONITOR_LEFT, freeLayout);
         createMonitor(StageNavigator.MONITOR_MIDDLE, freeLayout);
         createMonitor(StageNavigator.MONITOR_RIGHT, freeLayout);
-
-        resetLeanBackTimer();
     }
-
 
     private void setListeners() {
         stage.findViewById(R.id.share_button).setOnClickListener(new View.OnClickListener() {
@@ -62,19 +57,25 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
                 showTray(true);
             }
         });
-
         stage.findViewById(R.id.glass_pane).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                resetLeanBackTimer();
+                leanBackController.resetLeanBackTimer();
                 if (stage.findViewById(R.id.tray_frame).getVisibility() == View.VISIBLE)
                     showTray(false);
-                return false;
+                return false; // vital, otherwise no one else will get touch events
             }
         });
 
+        leanBackController.setLeanBackListener(new LeanBackController.LeanBackListener() {
+            @Override
+            public void leanBackModeChanged(boolean isInLeanBackMode) {
+                stage.findViewById(R.id.callcontrolbar).setVisibility(isInLeanBackMode ? View.INVISIBLE: View.VISIBLE);
+                showTray(false);
 
-        ((Activity) context).getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(this);
+            }
+        });
+
     }
 
     private void populateTray() {
@@ -157,46 +158,5 @@ public class StageController implements  View.OnTouchListener, View.OnSystemUiVi
         return false;
     }
 
-    protected void enableLeanBackMode(boolean enabled) {
-        int newVisibility =
-                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
-        if(enabled) {
-            newVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN
-                    |  View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        }
-
-        // Set the visibility
-        ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(newVisibility);
-    }
-
-    @Override
-    public void onSystemUiVisibilityChange(int visibility) {
-        boolean outOfLeanback =  ((lastSystemUIVisibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0
-                && (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0);
-
-        if (outOfLeanback)
-            resetLeanBackTimer();
-
-        lastSystemUIVisibility = visibility;
-        setLeanBackVisibility(!outOfLeanback);
-    }
-
-    private void setLeanBackVisibility(boolean goingToLeanback) {
-        stage.findViewById(R.id.callcontrolbar).setVisibility(goingToLeanback ? View.INVISIBLE: View.VISIBLE);
-        showTray(false);
-    }
-
-    private void resetLeanBackTimer() {
-        // First cancel any queued events - i.e. resetting the countdown clock
-        Runnable enterLeanback = new Runnable() {
-            @Override
-            public void run() {
-                enableLeanBackMode(true);
-            }
-        };
-        enterLeanBackTimer.removeCallbacksAndMessages(null);
-        // And fire the event in 3s time
-        enterLeanBackTimer.postDelayed(enterLeanback, LEAN_BACK_TIMEOUT);
-    }
 }
