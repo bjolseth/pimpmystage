@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+        >
+
+
+    <AbsoluteLayout
+            android:id="@+id/testcontainer"
+            android:layout_width="3000dp"
+            android:layout_height="500dp"
+            android:layout_x="-860dp"
+            android:layout_y="200dp"
+            android:background="#999"
+            android:orientation="horizontal"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            >
+        <TextView
+                android:layout_width="1000dp"
+                android:layout_height="500dp"
+                android:layout_x="0dp"
+                android:layout_y="0dp"
+                android:background="#900"
+                android:text="@string/remove"
+                />
+        <TextView
+                android:layout_width="1000dp"
+                android:layout_height="500dp"
+                android:layout_x="1000dp"
+                android:layout_y="0dp"
+                android:background="#090"
+                android:text="@string/remove"
+                />
+        <TextView
+                android:layout_width="1000dp"
+                android:layout_height="500dp"
+                android:layout_x="2000dp"
+                android:layout_y="0dp"
+                android:background="#009"
+                android:text="@string/remove"
+                />
+
+    </AbsoluteLayout>
+
+    <Button android:id="@+id/test_zoombutton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/remove"
+            ></Button>
+
+</AbsoluteLayout>
