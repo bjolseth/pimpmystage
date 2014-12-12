@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.+'
+    }
+}
+
+apply plugin: 'android'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+}
+
+// Runs script to replace old dependencies with new ones from Jenkins
+task fetchDependencies(type: Exec) {
+    doFirst {
+    workingDir "${projectDir}/scripts"
+    executable "sh"
+    commandLine './fetchConversationDependenciesFromJenkins.sh'
+    }
+}
+
+task createDebugKeystore(type: Exec) {
+        workingDir "${projectDir}/scripts"
+        executable "sh"
+        commandLine './createDebugKeystore.sh'
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
+
+    lintOptions {
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+
+        }
+
+        instrumentTest.setRoot('tests')
+    }
+
+}
+
+apply plugin: 'idea'
+
+idea {
+
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
