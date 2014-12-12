@@ -92,6 +92,24 @@
                     android:background="@drawable/cc_button_black"
                     android:src="@drawable/cc_add"
                     />
+            <ImageView
+                    android:id="@+id/hold_button"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/cc_button_black"
+                    android:layout_marginLeft="25dp"
+                    android:src="@drawable/cc_hold"
+                    />
+            <ImageView
+                    android:id="@+id/end_button"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/cc_button_red"
+                    android:layout_marginLeft="25dp"
+                    android:src="@drawable/cc_end2"
+                    />
 
         </LinearLayout>
 
@@ -102,7 +120,6 @@
                 android:background="#DBBB"
                 android:layout_alignParentBottom="true"
                 android:visibility="gone"
-
                 >
             <LinearLayout
                     android:id="@+id/tray"

@@ -18,6 +18,7 @@ import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.topmenu.TopMenuHandler;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
@@ -76,6 +77,17 @@ public class StageController implements  View.OnTouchListener {
                 showTray(false);
             }
         });
+
+        stage.findViewById(R.id.hold_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holdCall();
+            }
+        });
+    }
+
+    private void holdCall() {
+        Debug.debug("click hold");
 
     }
 

@@ -8,7 +8,7 @@ import com.cisco.telepresence.sandbox.R;
 
 public class LeanBackController implements View.OnSystemUiVisibilityChangeListener {
 
-    public static final int LEAN_BACK_TIMEOUT = 15000;
+    public static final int LEAN_BACK_TIMEOUT = 60000;
     private Handler enterLeanBackTimer;
     private Activity activity;
     private View stage;
