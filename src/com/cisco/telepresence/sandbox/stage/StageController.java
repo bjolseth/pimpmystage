@@ -2,6 +2,7 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.topmenu.TopMenuHandler;
+import com.cisco.telepresence.sandbox.stage.util.Animations;
 import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
@@ -32,6 +34,7 @@ public class StageController implements  View.OnTouchListener {
     private StageNavigator stageNavigator;
     private TopMenuHandler topMenuHandler;
     private LeanBackController leanBackController;
+    private OnHoldController onHoldController;
 
     public StageController(Context context, View stage, boolean freeLayout) {
         this.context = context;
@@ -41,7 +44,8 @@ public class StageController implements  View.OnTouchListener {
         codec = new SimulatedCodec();
 
         topMenuHandler = new TopMenuHandler(stage, stageNavigator);
-        stage.findViewById(R.id.garbageCan).setOnDragListener(topMenuHandler);
+        onHoldController = new OnHoldController(context, (ViewGroup) stage.findViewById(R.id.screens));
+
         populateTray();
         leanBackController = new LeanBackController((Activity) context, stage);
         setListeners();
@@ -58,6 +62,7 @@ public class StageController implements  View.OnTouchListener {
                 showTray(true);
             }
         });
+        stage.findViewById(R.id.garbageCan).setOnDragListener(topMenuHandler);
 
         stage.findViewById(R.id.glass_pane).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -81,14 +86,9 @@ public class StageController implements  View.OnTouchListener {
         stage.findViewById(R.id.hold_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holdCall();
+                onHoldController.putOnHold();
             }
         });
-    }
-
-    private void holdCall() {
-        Debug.debug("click hold");
-
     }
 
     private void populateTray() {

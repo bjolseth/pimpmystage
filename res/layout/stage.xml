@@ -151,21 +151,22 @@
                 android:layout_x="10dp"
                 android:layout_y="0dp"
                 />
-
-        <com.cisco.telepresence.sandbox.stage.view.ScreenView
-                android:id="@+id/singlescreen"
-                android:layout_width="@dimen/screen_width_single"
-                android:layout_height="@dimen/screen_height_single"
-                android:background="@color/screen_background"
-                android:layout_x="1025dp"
-                android:layout_y="0dp"
-                />
         <com.cisco.telepresence.sandbox.stage.view.ScreenView
                 android:id="@+id/rightscreen"
                 android:layout_width="@dimen/screen_width_single"
                 android:layout_height="@dimen/screen_height_single"
                 android:background="@color/screen_background"
                 android:layout_x="2040dp"
+                android:layout_y="0dp"
+                />
+
+        <!-- put center screen last for z-order purpose -->
+        <com.cisco.telepresence.sandbox.stage.view.ScreenView
+                android:id="@+id/singlescreen"
+                android:layout_width="@dimen/screen_width_single"
+                android:layout_height="@dimen/screen_height_single"
+                android:background="@color/screen_background"
+                android:layout_x="1025dp"
                 android:layout_y="0dp"
                 />
 

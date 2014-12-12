@@ -7,5 +7,6 @@
     <string name="remove">Remove</string>
     <string name="screen_help">Drag contacts or presentation to this monitor</string>
     <string name="calling">Calling Dude 1</string>
+    <string name="placenewcall">Place new call</string>
 
 </resources>

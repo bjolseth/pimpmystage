@@ -34,6 +34,7 @@ public class CodecCustomLayoutHelper {
         }
 
         codec.assignCustomLayoutToOutput(LayoutId, MonitorOutput);
+        codec.assignCustomLayoutToOutput(LayoutId, 2);
     }
 
     public void frameHasChanged(final FrameView frame) {

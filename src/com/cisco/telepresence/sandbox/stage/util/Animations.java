@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.View;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
@@ -51,6 +53,18 @@ public class Animations {
         set.play(moveX).with(scaleX).with(scaleY);
         set.setDuration(ANIMATION_TIME);
         set.start();
+    }
 
+    public static AnimatorSet animateMoveAndScale(View view, Point startPos, Point endPos, float startScale, float endScale) {
+        AnimatorSet set = new AnimatorSet();
+        Animator scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, startScale, endScale);
+        Animator scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, startScale, endScale);
+        Animator moveX = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, startPos.x, endPos.x);
+        Animator moveY = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startPos.y, endPos.y);
+
+        set.play(moveX).with(moveY).with(scaleX).with(scaleY);
+        set.setDuration(ANIMATION_TIME);
+        set.start();
+        return set;
     }
 }
