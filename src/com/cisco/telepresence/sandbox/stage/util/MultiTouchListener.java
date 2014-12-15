@@ -115,13 +115,12 @@ public class MultiTouchListener implements View.OnTouchListener, GestureDetector
 
         if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             longPressHandler.removeCallbacksAndMessages(null);
-            return false;
+
+            if (motionEvent.getPointerCount() == 1) {
+                callback.onEndTouch();
+            }
         }
 
-        int action = motionEvent.getAction();
-        if (action == MotionEvent.ACTION_UP) {
-            callback.onEndTouch();
-        }
         return true;
     }
 }
