@@ -14,7 +14,7 @@ public class Animations {
 
     private static final int ANIMATION_TIME = 200;
 
-    public static void animateFrameSizeAndPos(final FrameView frame, Rect newPos) {
+    public static void animateFrameSizeAndPos(final FrameView frame, Rect newPos, final Animator.AnimatorListener listener) {
         ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f);
         anim.setDuration(ANIMATION_TIME);
 
@@ -40,6 +40,9 @@ public class Animations {
                 frame.setBounds(new Rect(x, y, x+w, y+h));
             }
         });
+
+        if (listener != null)
+            anim.addListener(listener);
 
         anim.start();
     }

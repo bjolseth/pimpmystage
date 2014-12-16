@@ -1,10 +1,8 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
+import android.os.Handler;
 import android.view.DragEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
 import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
@@ -19,8 +17,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     private ScreenView screenView;
     private LayoutDirector layoutDirector;
-    boolean isCurrentlyInDragMode = false;
-    int dragStartX, dragStartY;
+    private boolean isCurrentlyInDragMode = false;
+    private boolean isCurrentlyScaling = false;
+    private int dragStartX;
+    private int dragStartY;
     private CodecCustomLayoutHelper layoutChangeHandler;
     private View.OnTouchListener touchListener;
     private View.OnDragListener onDragListener;
@@ -29,7 +29,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     public interface MonitorListener {
         void monitorSelected();
     }
-
 
     public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
         this.screenView = screenView;
@@ -43,6 +42,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         // don't want to listen to drops on other targets if we are doing free layout composition
         if (! (director instanceof ManualLayoutDirector))
             setDragListenerOnAllFrames(screenView, this);
+
     }
 
     public void setMonitorSelectedListener(MonitorListener listener) {
@@ -82,6 +82,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         if (!(view  instanceof FrameView))
             return;
 
+        isCurrentlyScaling = true;
         layoutDirector.scaleView(view, scale);
         if (view instanceof FrameView && layoutChangeHandler != null)
             layoutChangeHandler.frameHasChanged((FrameView) view);
@@ -95,6 +96,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onDoubleTap(View view) {
+        ((PredefineLayoutDirector) layoutDirector).tempNextFamily();
     }
 
     @Override
@@ -115,8 +117,11 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     @Override
     public void onEndTouch() {
+        if (isCurrentlyScaling) {
+            layoutDirector.updatePositions();
+            isCurrentlyScaling = false;
+        }
     }
-
 
     @Override
     public boolean onDrag(View dropTarget, DragEvent dragEvent) {
@@ -166,7 +171,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         view.setOnDragListener(onDragListener);
         layoutDirector.updatePositions();
     }
-
 
     private void onFrameViewDropped(FrameView frameView, View dropZoneView, DragEvent dragEvent) {
 

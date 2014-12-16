@@ -83,12 +83,22 @@ public class StageController implements  View.OnTouchListener {
             }
         });
 
+        stage.findViewById(R.id.end_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                endPressed();
+            }
+        });
+
         stage.findViewById(R.id.hold_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onHoldController.putOnHold();
             }
         });
+    }
+
+    private void endPressed() {
     }
 
     private void populateTray() {

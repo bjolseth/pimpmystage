@@ -1,32 +1,32 @@
 package com.cisco.telepresence.sandbox.stage.layout;
 
+import android.animation.Animator;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
+import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * All layout changes are restricted to Prominent, Overlay or Equal layout family modes.
  */
-public class PredefineLayoutDirector implements LayoutDirector{
-
-    private final ScreenView screenView;
-    private static final String TAG = "pimpmystage";
-    private enum LayoutFamily {Prominent, Overlay, Equal, Single};
-    private List<FrameView> frames;
+public class PredefineLayoutDirector implements LayoutDirector, Animator.AnimatorListener {
 
     private final float OverlayPiPHeightPercent = 0.20f;
-    private final float MinimumsEqualPercent = 0.49f;
-    private final float TriggerPointEqualPercent = 0.50f;
     private final float TriggerPointOverlayPercent = 0.80f;
-    private final float TriggerPointSinglePercent = 1.06f;
 
-    private float currentBigPipPercent = 1.0f;
-    private LayoutFamily currentFamily = LayoutFamily.Overlay;
+    private final ScreenView screenView;
+    public enum LayoutFamily {Prominent, Overlay, Equal, Single};
+    private LayoutFamily currentFamily = LayoutFamily.Single;
+
+    private List<FrameView> frames;
+    private boolean isAnimating = false;
+
 
     public PredefineLayoutDirector(ScreenView screenView) {
         this.screenView = screenView;
@@ -34,7 +34,164 @@ public class PredefineLayoutDirector implements LayoutDirector{
 
         if (! frames.isEmpty())
             setMainView(frames.get(0));
+    }
 
+    @Override
+    public void moveView(View view, int dx, int dy) {
+        // only swap views, don't move freely
+    }
+
+    public static void sendViewToBack(final View child) {
+        final ViewGroup parent = (ViewGroup) child.getParent();
+        if (null != parent) {
+            parent.removeView(child);
+            parent.addView(child, 0);
+        }
+    }
+
+    public void tempNextFamily() {
+        if (currentFamily == LayoutFamily.Single)
+            setLayoutFamily(LayoutFamily.Overlay);
+        else if (currentFamily == LayoutFamily.Overlay)
+            setLayoutFamily(LayoutFamily.Prominent);
+        else if (currentFamily == LayoutFamily.Prominent)
+            setLayoutFamily(LayoutFamily.Equal);
+        else if (currentFamily == LayoutFamily.Equal)
+            setLayoutFamily(LayoutFamily.Single);
+    }
+
+    public void setLayoutFamily(LayoutFamily family) {
+        currentFamily = family;
+        Debug.debug("Set layout family %s", family);
+        updatePositions();
+    }
+
+    @Override
+    public void updatePositions() {
+        List<Rect> bounds = new ArrayList<Rect>();
+        if (currentFamily == LayoutFamily.Equal)
+            bounds = getPerfectEqualPositions();
+        else if (currentFamily == LayoutFamily.Prominent)
+            bounds = getPerfectProminentPositions((int) (screenView.getHeight() * TriggerPointOverlayPercent));
+        else if (currentFamily == LayoutFamily.Overlay)
+            bounds = getPerfectOverlayPositions();
+        else if (currentFamily == LayoutFamily.Single)
+            bounds = getPerfectSinglePositions();
+
+        int i = 0;
+        for (FrameView frame : frames) {
+            Animations.animateFrameSizeAndPos(frame, bounds.get(i), this);
+            i++;
+        }
+    }
+
+    @Override
+    public void scaleView(View scaledView, float scale) {
+        if (! (scaledView instanceof FrameView))
+            return;
+
+        FrameView view = (FrameView) scaledView;
+
+        if (isAnimating) {
+            return; // Don't change frames while animating them
+        }
+
+        if (currentFamily == LayoutFamily.Single)
+            scaleInSingle(view, scale);
+        else if (currentFamily == LayoutFamily.Overlay)
+            scaleInOverlay(view, scale);
+        else if (currentFamily == LayoutFamily.Prominent)
+            scaleInProminent(view, scale);
+        else if (currentFamily == LayoutFamily.Equal)
+            scaleInEqual(view, scale);
+    }
+
+    private void scaleInEqual(FrameView view, float scale) {
+
+        Rect bounds = view.getBounds();
+        int shrinkPerEvent = 0;
+        if (scale < 1) shrinkPerEvent = 3;
+        else if (scale > 1) shrinkPerEvent = -3;
+
+        shrinkCentered(bounds, shrinkPerEvent);
+        view.setBounds(bounds);
+
+        if(scale > 1 && view.getHeight() > 0.5 * getScreenRect().height()) {
+            setMainView(view);
+            setLayoutFamily(LayoutFamily.Prominent);
+        }
+    }
+
+    private void scaleInProminent(View view, float scale) {
+        boolean isMainView = view == getMainView();
+
+        if (! isMainView)
+            scale = 1 / scale;
+
+        int newHeight = (int) (getMainView().getHeight() * scale);
+
+        float prominentPercent = newHeight / (float) getScreenRect().height();
+
+        float equalTriggerPercent = getTriggerPointEqualPercent();
+
+        if (scale > 1 && prominentPercent > TriggerPointOverlayPercent) {
+            setLayoutFamily(LayoutFamily.Overlay);
+        }
+        else if (prominentPercent < equalTriggerPercent) {
+            setLayoutFamily(LayoutFamily.Equal);
+        }
+        else if (scale < 1) {
+            List<Rect> bounds = getPerfectProminentPositions(newHeight);
+            for (int i=0; i<bounds.size(); i++) {
+                frames.get(i).setBounds(bounds.get(i)); // don't animate this
+            }
+        }
+    }
+
+    private void scaleInOverlay(View view, float scale) {
+        boolean isMainView = view == getMainView();
+
+        if (isMainView) {
+
+            // scale is actually exactly 1 when starting gesture
+            if (scale < 1)
+                setLayoutFamily(LayoutFamily.Prominent);
+            else if (scale > 1)
+                setLayoutFamily(LayoutFamily.Single);
+        }
+    }
+
+    private void scaleInSingle(View view, float scale) {
+        if (view == getMainView()) {
+
+            if (scale < 1 && frames.size() > 1)
+                setLayoutFamily(LayoutFamily.Overlay);
+
+            else {
+                scale = (float) Math.sqrt(scale); // make scaling 'heavier', since we will be bouncing back anyway
+                FrameView main = getMainView();
+                Rect rect = main.getBounds();
+                int newWidth = (int) (scale*rect.width());
+                int newHeight = (int) (newWidth * 9/16.);
+                main.setPos(rect.left - (newWidth - rect.width()) / 2, rect.top);
+                main.setSize(newWidth, newHeight);
+            }
+        }
+    }
+
+    private void shrinkCentered(Rect r, int distance) {
+        r.left = r.left + distance;
+        r.right = r.right - distance;
+        r.top = r.top + distance;
+        r.bottom = r.bottom - distance;
+    }
+
+    private float getTriggerPointEqualPercent() {
+        int count = frames.size();
+        if (count < 4)
+            return 0.5f;
+        else
+            return (float) count / (count + 1);
     }
 
     private FrameView getMainView() {
@@ -49,184 +206,6 @@ public class PredefineLayoutDirector implements LayoutDirector{
         sendViewToBack(view);
     }
 
-    public static void sendViewToBack(final View child) {
-        final ViewGroup parent = (ViewGroup) child.getParent();
-        if (null != parent) {
-            parent.removeView(child);
-            parent.addView(child, 0);
-        }
-    }
-
-    public void setBigPipPercent(float percent) {
-        percent = Math.min(TriggerPointSinglePercent + 0.04f, percent);
-
-        if (frames.size() < 4)
-            percent = Math.max(0.49f, percent);
-        else
-            percent = Math.max(0.65f, percent);
-
-        //Debug.debug("Set percent ratio: %.2f", percent);
-        currentBigPipPercent = percent;
-        updatePositions();
-    }
-
-    @Override
-    public void updatePositions() {
-        if (frames.isEmpty())
-            return;
-
-        determineLayoutMode();
-
-        if (currentFamily == LayoutFamily.Prominent)
-            drawProminentMode(false);
-        else if (currentFamily == LayoutFamily.Overlay)
-            drawOverlayMode();
-        else if (currentFamily == LayoutFamily.Equal)
-            drawEqualMode(false);
-        else if (currentFamily == LayoutFamily.Single)
-            drawSingleMode();
-    }
-
-    @Override
-    public void scaleView(View view, float scale) {
-        scale = (float) Math.sqrt(scale); // Make scaling slower/less aggressive
-
-        // Make
-        if (currentFamily == LayoutFamily.Equal && scale > 1) {
-            setMainView((FrameView) view);
-            setBigPipPercent(currentBigPipPercent * scale);
-            determineLayoutMode();
-        }
-
-        // If we are making a small pip larger, make the main pip smaller (invert scaling)
-        else {
-            if (view != getMainView()) {
-                scale = 1 / scale;
-            }
-            setBigPipPercent(currentBigPipPercent * scale);
-        }
-
-    }
-
-    private void drawEqualMode(boolean animate) {
-        if (frames.size() < 4) {
-            drawOverlayMode();
-            return;
-        }
-
-        // For anything more than 3 frames, we draw four in a grid and skip the rest
-        int xCenter = screenView.getWidth()/2;
-        int yCenter = screenView.getHeight()/2;
-
-        Rect r1 = new Rect(0, 0, xCenter, yCenter);
-        Rect r2 = new Rect(xCenter, 0, xCenter*2, yCenter);
-        Rect r3 = new Rect(0, yCenter, xCenter, yCenter*2);
-        Rect r4 = new Rect(xCenter, yCenter, xCenter*2, yCenter*2);
-
-        if (animate) {
-            Animations.animateFrameSizeAndPos(frames.get(0), r1);
-            Animations.animateFrameSizeAndPos(frames.get(1), r2);
-            Animations.animateFrameSizeAndPos(frames.get(2), r3);
-            Animations.animateFrameSizeAndPos(frames.get(3), r4);
-        }
-        else {
-            frames.get(0).setBounds(r1);
-            frames.get(1).setBounds(r2);
-            frames.get(2).setBounds(r3);
-            frames.get(3).setBounds(r4);
-        }
-    }
-
-    private void drawSingleMode() {
-        FrameView prominentView = getMainView();
-
-        Rect bounds = new Rect(0, 0, screenView.getWidth(), screenView.getHeight());
-        prominentView.setBounds(bounds);
-    }
-
-    private void setPipsVisible(boolean visible) {
-        for (int i=1; i<frames.size(); i++) {
-            frames.get(i).setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private void drawOverlayMode() {
-
-        FrameView prominentView = getMainView();
-        int prominentHeight = (int) (screenView.getHeight() * Math.min(currentBigPipPercent, 1.0f));
-        int prominentWidth = prominentHeight * 16/9;
-
-        int max = screenView.getWidth();
-        if (prominentWidth > max)
-            prominentWidth = max;
-
-        // Prominent frame
-        int x = (max-prominentWidth)/2;
-        Rect bounds = new Rect(x, 0, x + prominentWidth, prominentHeight);
-        prominentView.setBounds(bounds);
-
-        List<FrameView> frames = screenView.getFrameViews();
-
-        int pipHeight = (int) (screenView.getHeight() * OverlayPiPHeightPercent);
-        int pipWidth = (int) (pipHeight * 16/9.);
-
-        // TODO Need to find pips properly
-        int xPip = (screenView.getWidth() - pipWidth*(frames.size() -1))/2;
-        int yPip = screenView.getHeight() - pipHeight;
-        for (int i = 1; i<frames.size(); i++) {
-            FrameView pip = frames.get(i);
-            Rect boundsPip = new Rect(xPip, yPip, xPip + pipWidth, yPip + pipHeight);
-            pip.setBounds(boundsPip);
-            xPip += pipWidth;
-        }
-    }
-
-    private void stopAnimations() {
-        for (FrameView view : frames) {
-            view.clearAnimation();
-        }
-    }
-
-    private void determineLayoutMode() {
-        float triggerEqual = TriggerPointEqualPercent;
-        if (frames.size() > 3)
-            triggerEqual = 2/3.f;
-
-        if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent > TriggerPointOverlayPercent) {
-            stopAnimations();
-            switchLayoutFamily(LayoutFamily.Overlay);
-            drawOverlayMode();
-        }
-        else if (currentFamily == LayoutFamily.Overlay && currentBigPipPercent < TriggerPointOverlayPercent) {
-            stopAnimations();
-            switchLayoutFamily(LayoutFamily.Prominent);
-            drawProminentMode(true);
-        }
-        else if (currentFamily == LayoutFamily.Prominent && currentBigPipPercent < triggerEqual) {
-            stopAnimations();
-            switchLayoutFamily(LayoutFamily.Equal);
-            drawEqualMode(true);
-        }
-        else if (currentFamily == LayoutFamily.Equal && currentBigPipPercent > triggerEqual) {
-            stopAnimations();
-            switchLayoutFamily(LayoutFamily.Prominent);
-            drawProminentMode(true);
-        }
-        else if (currentFamily == LayoutFamily.Overlay && currentBigPipPercent > TriggerPointSinglePercent) {
-            switchLayoutFamily(LayoutFamily.Single);
-            setPipsVisible(false);
-            drawSingleMode();
-        }
-        else if (currentFamily == LayoutFamily.Single && currentBigPipPercent < TriggerPointSinglePercent) {
-            switchLayoutFamily(LayoutFamily.Overlay);
-            setPipsVisible(true);
-            drawOverlayMode();
-        }
-    }
-
-    private void switchLayoutFamily(LayoutFamily layout) {
-        currentFamily = layout;
-    }
 
     @Override
     public void swapPositionAndSize(FrameView view1, FrameView view2) {
@@ -238,22 +217,71 @@ public class PredefineLayoutDirector implements LayoutDirector{
         Rect bounds1 = view1.getBounds();
         Rect bounds2 = view2.getBounds();
 
-        Animations.animateFrameSizeAndPos(view1, bounds2);
-        Animations.animateFrameSizeAndPos(view2, bounds1);
+        Animations.animateFrameSizeAndPos(view1, bounds2, this);
+        Animations.animateFrameSizeAndPos(view2, bounds1, this);
     }
 
 
-    private void drawProminentMode(boolean animated) {
+    private Rect getScreenRect() {
+        return new Rect(0, 0, screenView.getWidth(), screenView.getHeight());
+    }
 
-        FrameView prominentView = getMainView();
-        int prominentHeight = (int) (screenView.getHeight() * currentBigPipPercent);
+    private List<Rect> getPerfectSinglePositions() {
+        List<Rect> bounds = getPerfectOverlayPositions();
+        for (int i=1; i < bounds.size(); i++) {
+            bounds.get(i).top = screenView.getHeight(); // place the pips 'under' the screen bottom
+        }
+        return bounds;
+    }
+
+    private List<Rect>getPerfectOverlayPositions() {
+        List<Rect> bounds = new ArrayList<Rect>();
+
+        Rect prominent = getScreenRect();
+        bounds.add(prominent);
+
+        int pipHeight = (int) (screenView.getHeight() * OverlayPiPHeightPercent);
+        int pipWidth = (int) (pipHeight * 16/9.);
+
+        int xPip = (screenView.getWidth() - pipWidth*(frames.size() -1))/2;
+        int yPip = screenView.getHeight() - pipHeight;
+        for (int i = 1; i<frames.size(); i++) {
+            Rect boundsPip = new Rect(xPip, yPip, xPip + pipWidth, yPip + pipHeight);
+            xPip += pipWidth;
+            bounds.add(boundsPip);
+        }
+
+        return bounds;
+    }
+
+    private List<Rect> getPerfectEqualPositions() {
+        List<Rect> bounds = new ArrayList<Rect>();
+
+        int xCenter = screenView.getWidth()/2;
+        int yCenter = screenView.getHeight()/2;
+
+        if (frames.size() < 4) {
+            return getPerfectProminentPositions(yCenter);
+        }
+
+        // For anything more than 3 frames, we draw four in a grid and skip the rest
+        bounds.add(new Rect(0, 0, xCenter, yCenter));
+        bounds.add(new Rect(xCenter, 0, xCenter*2, yCenter));
+        bounds.add(new Rect(0, yCenter, xCenter, yCenter*2));
+        bounds.add(new Rect(xCenter, yCenter, xCenter*2, yCenter*2));
+        return bounds;
+    }
+
+    private List<Rect> getPerfectProminentPositions(int prominentHeight) {
+        List<Rect> bounds = new ArrayList<Rect>();
 
         // Prominent frame
         int prominentWidth = prominentHeight * 16/9;
         int max = screenView.getWidth();
         int x = (max-prominentWidth)/2;
-        Rect bounds = new Rect(x, 0, x + prominentWidth, prominentHeight);
-        prominentView.setBounds(bounds);
+        Rect prominent = new Rect(x, 0, x + prominentWidth, prominentHeight);
+
+        bounds.add(prominent);
 
         List<FrameView> frames = screenView.getFrameViews();
         int pipHeight = screenView.getHeight() - prominentHeight;
@@ -262,19 +290,29 @@ public class PredefineLayoutDirector implements LayoutDirector{
         int xPip = (screenView.getWidth() - pipWidth*(frames.size() -1))/2;
         int yPip = prominentHeight;
         for (int i = 1; i<frames.size(); i++) {
-            FrameView pip = frames.get(i);
             Rect boundsPip = new Rect(xPip, yPip, xPip + pipWidth, yPip + pipHeight);
-            if (animated)
-                Animations.animateFrameSizeAndPos(pip, boundsPip);
-            else
-                pip.setBounds(boundsPip);
+            bounds.add(boundsPip);
             xPip += pipWidth;
         }
+
+        return bounds;
     }
 
     @Override
-    public void moveView(View view, int dx, int dy) {
-        // only swap views, don't move freely
+    public void onAnimationStart(Animator animator) {
+        isAnimating = true;
     }
 
+    @Override
+    public void onAnimationEnd(Animator animator) {
+        isAnimating = false;
+    }
+
+    @Override
+    public void onAnimationCancel(Animator animator) {
+        isAnimating = false;
+    }
+
+    @Override
+    public void onAnimationRepeat(Animator animator) {}
 }
