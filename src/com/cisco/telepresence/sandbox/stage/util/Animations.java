@@ -16,7 +16,7 @@ public class Animations {
 
     public static void animateFrameSizeAndPos(final FrameView frame, Rect newPos, final Animator.AnimatorListener listener) {
         ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f);
-        anim.setDuration(ANIMATION_TIME);
+        anim.setDuration(250);
 
         Rect existingPos = frame.getBounds();
         final int x0 = existingPos.left;

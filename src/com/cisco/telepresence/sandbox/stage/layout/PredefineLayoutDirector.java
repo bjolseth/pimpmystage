@@ -168,13 +168,11 @@ public class PredefineLayoutDirector implements LayoutDirector, Animator.Animato
                 setLayoutFamily(LayoutFamily.Overlay);
 
             else {
-                scale = (float) Math.sqrt(scale); // make scaling 'heavier', since we will be bouncing back anyway
+                int growPerEvent = (scale > 1 ?  2 : -2);
                 FrameView main = getMainView();
                 Rect rect = main.getBounds();
-                int newWidth = (int) (scale*rect.width());
-                int newHeight = (int) (newWidth * 9/16.);
-                main.setPos(rect.left - (newWidth - rect.width()) / 2, rect.top);
-                main.setSize(newWidth, newHeight);
+                shrinkCentered(rect, -growPerEvent);
+                main.setBounds(rect);
             }
         }
     }
