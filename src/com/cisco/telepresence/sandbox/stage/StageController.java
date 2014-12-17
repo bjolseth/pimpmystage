@@ -14,6 +14,7 @@ import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.topmenu.TopMenuHandler;
+import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
@@ -74,7 +75,7 @@ public class StageController implements  View.OnTouchListener, TopMenuHandler.La
         leanBackController.setLeanBackListener(new LeanBackController.LeanBackListener() {
             @Override
             public void leanBackModeChanged(boolean isInLeanBackMode) {
-                stage.findViewById(R.id.callcontrolbar).setVisibility(isInLeanBackMode ? View.INVISIBLE: View.VISIBLE);
+                stage.findViewById(R.id.callcontrolbar).setVisibility(isInLeanBackMode ? View.INVISIBLE : View.VISIBLE);
                 stage.findViewById(R.id.topbar).setVisibility(isInLeanBackMode ? View.INVISIBLE : View.VISIBLE);
                 showTray(false);
             }
@@ -95,6 +96,9 @@ public class StageController implements  View.OnTouchListener, TopMenuHandler.La
         });
 
         topMenuHandler.setLayoutListener(this);
+
+        MultiTouchListener stageGestureListener = new MultiTouchListener(context, stageNavigator);
+        stage.setOnTouchListener(stageGestureListener);
     }
 
     private void endPressed() {

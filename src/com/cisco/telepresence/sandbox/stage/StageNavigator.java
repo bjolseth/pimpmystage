@@ -5,12 +5,13 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
 import android.view.ViewGroup;
+import com.cisco.telepresence.sandbox.stage.util.MultiTouchListener;
 
 
 /**
  * For now, just prototyped to support fixed 3 monitor setup
  */
-public class StageNavigator {
+public class StageNavigator implements MultiTouchListener.MultiTouchCallback {
 
     public static final int MONITOR_LEFT = 0, MONITOR_MIDDLE = 1, MONITOR_RIGHT = 2;
     private ViewGroup screens;
@@ -77,4 +78,40 @@ public class StageNavigator {
         currentView = view;
     }
 
+    @Override
+    public void onScaleView(View view, float scale) {
+        if (! isZoomedOut && scale < 1)
+            zoomOut();
+        else if (isZoomedOut && scale > 1)
+            focusOnView(MONITOR_MIDDLE);
+    }
+
+    @Override
+    public void onSingleTap(View view) {
+
+    }
+
+    @Override
+    public void onDoubleTap(View view) {
+        if (isZoomedOut)
+            focusOnView(MONITOR_MIDDLE);
+        else
+            zoomOut();
+    }
+
+    @Override
+    public void onEndTouch() {
+
+    }
+
+    @Override
+    public void onLongPress(View view) {
+
+    }
+
+    @Override
+    public void onFling(boolean flingToLeft) {
+        if (! isZoomedOut)
+            swipe(flingToLeft);
+    }
 }
