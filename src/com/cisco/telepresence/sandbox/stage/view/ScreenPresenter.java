@@ -28,7 +28,8 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
 
     public interface ScreenSelectedCallback {
-        void monitorSelected();
+        void screenSelected();
+        void swipe(boolean toLeft);
     }
 
     public ScreenPresenter(ScreenView screenView) {
@@ -97,8 +98,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         }
     }
 
-
-
     @Override
     public void onScaleView(View view, float scale) {
         if (!(view  instanceof FrameView))
@@ -113,7 +112,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public void onSingleTap(View view) {
         if (screenSelectedCallback != null)
-            screenSelectedCallback.monitorSelected();
+            screenSelectedCallback.screenSelected();
     }
 
     @Override
@@ -127,6 +126,11 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
             View.DragShadowBuilder shadow = createShadow((FrameView) view);
             view.startDrag(null, shadow, view, 0);
         }
+    }
+
+    @Override
+    public void onFling(boolean toLeft) {
+        screenSelectedCallback.swipe(toLeft);
     }
 
     private View.DragShadowBuilder createShadow(FrameView view) {

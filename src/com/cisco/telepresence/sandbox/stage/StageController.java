@@ -124,9 +124,15 @@ public class StageController implements  View.OnTouchListener, TopMenuHandler.La
         final ScreenPresenter screenPresenter = new ScreenPresenter(screenView);
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.ScreenSelectedCallback() {
             @Override
-            public void monitorSelected() {
+            public void screenSelected() {
                 stageNavigator.focusOnView(screenIndex);
             }
+
+            @Override
+            public void swipe(boolean toLeft) {
+                stageNavigator.swipe(toLeft);
+            }
+
         });
 
         CodecCustomLayoutHelper layoutHandler = new CodecCustomLayoutHelper(codec, screenView);

@@ -18,7 +18,7 @@ public class StageNavigator {
     private static final int ScreenOffset = 1015;
 
     private float ZoomOutScale = 0.4f;
-    int demoStep = 0;
+    int currentView = MONITOR_MIDDLE;
     boolean isZoomedOut;
 
     public StageNavigator(ViewGroup screens) {
@@ -41,7 +41,20 @@ public class StageNavigator {
         isZoomedOut = true;
     }
 
+    public void swipe(boolean left) {
+        if (left)
+            focusOnView(currentView - 1);
+        else
+            focusOnView(currentView + 1);
+
+    }
+
     public void focusOnView(int view) {
+        if (view < MONITOR_LEFT)
+            view = MONITOR_LEFT;
+        if (view > MONITOR_RIGHT)
+            view = MONITOR_RIGHT;
+
         float startX = screens.getTranslationX();
         float startScale = screens.getScaleX();
 
@@ -61,6 +74,7 @@ public class StageNavigator {
         set.start();
 
         isZoomedOut = false;
+        currentView = view;
     }
 
 }

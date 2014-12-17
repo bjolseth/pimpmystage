@@ -26,6 +26,7 @@ public class MultiTouchListener implements View.OnTouchListener, GestureDetector
         void onDoubleTap(View view);
         void onEndTouch();
         void onLongPress(View view);
+        void onFling(boolean flingToLeft);
     }
 
     @Override
@@ -70,6 +71,13 @@ public class MultiTouchListener implements View.OnTouchListener, GestureDetector
 
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+        int minimumSpeed = 1500;
+
+        if (v > minimumSpeed)
+            callback.onFling(true);
+        else if (v < -minimumSpeed)
+            callback.onFling(false);
+
         return true;
     }
 
