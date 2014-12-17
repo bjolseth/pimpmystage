@@ -24,22 +24,33 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     private View.OnTouchListener touchListener;
     private View.OnDragListener onDragListener;
     private ScreenSelectedCallback screenSelectedCallback;
+    private boolean isManualLayoutMode;
+
 
     public interface ScreenSelectedCallback {
         void monitorSelected();
     }
 
-    public ScreenPresenter(ScreenView screenView, LayoutDirector director) {
+    public ScreenPresenter(ScreenView screenView) {
         this.screenView = screenView;
-        this.layoutDirector = director;
+
+        setIsManualLayoutMode(false);
 
         MultiTouchListener multiTouchListener = new MultiTouchListener(screenView.getContext(), this);
         setTouchListenerOnAllFrames(screenView, multiTouchListener);
-        setManualDragListenerOnScreenView(screenView, this);
         screenView.setOnTouchListener(multiTouchListener);
+        setManualDragListenerOnScreenView(screenView, this);
+    }
+
+    public void setIsManualLayoutMode(boolean isManualLayout) {
+        Debug.debug("is manual mode: " + isManualLayout);
+        layoutDirector = isManualLayout ? new ManualLayoutDirector(screenView) : new PredefineLayoutDirector(screenView);
+        isManualLayoutMode = isManualLayout;
 
         // don't want to listen to drops on other targets if we are doing free layout composition
-        if (! (director instanceof ManualLayoutDirector))
+        if (isManualLayout)
+            removeDragListenerOnAllFrames(screenView, this);
+        else
             setDragListenerOnAllFrames(screenView, this);
 
     }
@@ -75,6 +86,18 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
             }
         }
     }
+
+    private void removeDragListenerOnAllFrames(ScreenView screenView, View.OnDragListener dragListener) {
+        this.onDragListener = dragListener;
+        for (int i=0; i<screenView.getChildCount(); i++) {
+            View view = screenView.getChildAt(i);
+            if (view instanceof FrameView) {
+                view.setOnDragListener(null);
+            }
+        }
+    }
+
+
 
     @Override
     public void onScaleView(View view, float scale) {
@@ -154,7 +177,6 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     }
 
     private void highlightDraggableView(View view) {
-
     }
 
     private void addTrayElementToScreen(TrayButton button) {
@@ -172,7 +194,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     private void addFrame(FrameView view) {
         screenView.addFrame(view);
         view.setOnTouchListener(touchListener);
-        view.setOnDragListener(onDragListener);
+
+        if (! isManualLayoutMode)
+            view.setOnDragListener(onDragListener);
+
         layoutDirector.updatePositions();
     }
 

@@ -1,14 +1,11 @@
 package com.cisco.telepresence.sandbox.stage.topmenu;
 
-import android.graphics.Color;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.ImageView;
-import android.widget.TextView;
 import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.StageNavigator;
-import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
 import com.cisco.telepresence.sandbox.stage.util.Animations;
 import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.FrameView;
@@ -18,12 +15,22 @@ public class TopMenuHandler implements View.OnDragListener {
 
     private final View stage;
     private final StageNavigator stageNavigator;
+    private LayoutListener layoutListener;
+    private boolean isManualLayoutMode = false;
+
+    public interface LayoutListener {
+        void layoutChanged(boolean isManualLayout);
+    }
 
     public TopMenuHandler(View stage, StageNavigator stageNavigator) {
         this.stage = stage;
         this.stageNavigator = stageNavigator;
 
         setupListeners(stage);
+    }
+
+    public void setLayoutListener(LayoutListener listener) {
+        layoutListener = listener;
     }
 
     private void setupListeners(View stage) {
@@ -37,17 +44,23 @@ public class TopMenuHandler implements View.OnDragListener {
             @Override
             public void onClick(View view) {
                 Debug.debug("click layout");
-
+                toggleLayoutMode();
             }
         });
     }
 
-    public void setLayoutMode(boolean isLocked) {
+    public void toggleLayoutMode() {
         ImageView lock = (ImageView) stage.findViewById(R.id.layout_button);
-        if (isLocked)
-            lock.setImageResource(R.drawable.locked);
-        else
+
+        isManualLayoutMode = !isManualLayoutMode;
+
+        if (isManualLayoutMode)
             lock.setImageResource(R.drawable.unlocked);
+        else
+            lock.setImageResource(R.drawable.locked);
+
+        if (layoutListener != null)
+            layoutListener.layoutChanged(isManualLayoutMode);
 
     }
 

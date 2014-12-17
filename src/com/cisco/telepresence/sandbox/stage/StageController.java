@@ -11,9 +11,6 @@ import com.cisco.telepresence.sandbox.R;
 import com.cisco.telepresence.sandbox.stage.codec.CodecInterface;
 import com.cisco.telepresence.sandbox.stage.codec.SimulatedCodec;
 import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
-import com.cisco.telepresence.sandbox.stage.layout.LayoutDirector;
-import com.cisco.telepresence.sandbox.stage.layout.ManualLayoutDirector;
-import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.topmenu.TopMenuHandler;
@@ -21,16 +18,19 @@ import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
 
-public class StageController implements  View.OnTouchListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class StageController implements  View.OnTouchListener, TopMenuHandler.LayoutListener {
 
     private View stage;
     private Context context;
-    private ScreenPresenter screenPresenter;
     private CodecInterface codec;
     private StageNavigator stageNavigator;
     private TopMenuHandler topMenuHandler;
     private LeanBackController leanBackController;
     private OnHoldController onHoldController;
+    private List<ScreenPresenter> screens;
 
     public StageController(Context context, View stage, boolean freeLayout) {
         this.context = context;
@@ -46,9 +46,10 @@ public class StageController implements  View.OnTouchListener {
         leanBackController = new LeanBackController((Activity) context, stage);
         setListeners();
 
-        createMonitor(StageNavigator.MONITOR_LEFT, freeLayout);
-        createMonitor(StageNavigator.MONITOR_MIDDLE, freeLayout);
-        createMonitor(StageNavigator.MONITOR_RIGHT, freeLayout);
+        screens = new ArrayList<ScreenPresenter>();
+        screens.add(createScreen(StageNavigator.MONITOR_LEFT));
+        screens.add(createScreen(StageNavigator.MONITOR_MIDDLE));
+        screens.add(createScreen(StageNavigator.MONITOR_RIGHT));
     }
 
     private void setListeners() {
@@ -92,6 +93,8 @@ public class StageController implements  View.OnTouchListener {
                 onHoldController.putOnHold();
             }
         });
+
+        topMenuHandler.setLayoutListener(this);
     }
 
     private void endPressed() {
@@ -106,35 +109,31 @@ public class StageController implements  View.OnTouchListener {
         }
     }
 
-    private void createMonitor(final int monitorIndex, boolean freeLayout) {
-        int monitorViewId = R.id.singlescreen;
-        if (monitorIndex == 0)
-            monitorViewId = R.id.leftscreen;
-        else if (monitorIndex == 2)
-            monitorViewId = R.id.rightscreen;
+    private ScreenPresenter createScreen(final int screenIndex) {
+        int screenViewId = R.id.singlescreen;
+        if (screenIndex == 0)
+            screenViewId = R.id.leftscreen;
+        else if (screenIndex == 2)
+            screenViewId = R.id.rightscreen;
 
-        ScreenView screenView = (ScreenView) stage.findViewById(monitorViewId);
+        ScreenView screenView = (ScreenView) stage.findViewById(screenViewId);
 
         Screen screen = new Screen();
         screenView.setScreen(screen);
 
-        LayoutDirector director = freeLayout ? new ManualLayoutDirector(screenView) :
-                new PredefineLayoutDirector(screenView);
-
-        screenPresenter = new ScreenPresenter(screenView, director);
+        final ScreenPresenter screenPresenter = new ScreenPresenter(screenView);
         screenPresenter.setMonitorSelectedListener(new ScreenPresenter.ScreenSelectedCallback() {
             @Override
             public void monitorSelected() {
-                stageNavigator.focusOnView(monitorIndex);
+                stageNavigator.focusOnView(screenIndex);
             }
         });
 
         CodecCustomLayoutHelper layoutHandler = new CodecCustomLayoutHelper(codec, screenView);
         screenPresenter.setLayoutChangeHandler(layoutHandler);
-
-
-        topMenuHandler.setLayoutMode(director instanceof PredefineLayoutDirector);
+        return screenPresenter;
     }
+
 
 
     private void showTray(final boolean show) {
@@ -178,4 +177,9 @@ public class StageController implements  View.OnTouchListener {
     }
 
 
+    @Override
+    public void layoutChanged(boolean isManualLayout) {
+        for (ScreenPresenter screen : screens)
+            screen.setIsManualLayoutMode(isManualLayout);
+    }
 }

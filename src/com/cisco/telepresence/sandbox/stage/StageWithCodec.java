@@ -38,7 +38,7 @@ public class StageWithCodec extends Activity
         screen.setFrames(frames);
         screenView.setScreen(screen);
 
-        ScreenPresenter p = new ScreenPresenter(screenView, director);
+        ScreenPresenter p = new ScreenPresenter(screenView);
         p.setLayoutChangeHandler(layoutHandler);
     }
 
