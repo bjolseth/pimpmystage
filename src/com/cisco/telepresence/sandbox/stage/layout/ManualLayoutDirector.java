@@ -23,13 +23,6 @@ public class ManualLayoutDirector implements LayoutDirector {
         }
     }
 
-    public void moveView0(View view, int x, int y) {
-        if (view instanceof FrameView) {
-            ((FrameView) view).setPos(x, y);
-            keepViewInsideScreen((FrameView) view);
-        }
-    }
-
     @Override
     public void moveView(View view, int dx, int dy) {
         if (view instanceof FrameView) {
@@ -40,10 +33,12 @@ public class ManualLayoutDirector implements LayoutDirector {
 
     @Override
     public void swapPositionAndSize(FrameView view1, FrameView view2) {
+        // nothing to do, all positioning is manual
     }
 
     @Override
     public void updatePositions() {
+        // nothing to do, all positioning is manual
     }
 
     private void keepViewInsideScreen(FrameView view) {

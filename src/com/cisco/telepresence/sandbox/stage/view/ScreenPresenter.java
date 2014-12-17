@@ -1,6 +1,5 @@
 package com.cisco.telepresence.sandbox.stage.view;
 
-import android.os.Handler;
 import android.view.DragEvent;
 import android.view.View;
 import com.cisco.telepresence.sandbox.stage.layout.CodecCustomLayoutHelper;
@@ -24,9 +23,9 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     private CodecCustomLayoutHelper layoutChangeHandler;
     private View.OnTouchListener touchListener;
     private View.OnDragListener onDragListener;
-    private MonitorListener monitorListener;
+    private ScreenSelectedCallback screenSelectedCallback;
 
-    public interface MonitorListener {
+    public interface ScreenSelectedCallback {
         void monitorSelected();
     }
 
@@ -45,8 +44,8 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
     }
 
-    public void setMonitorSelectedListener(MonitorListener listener) {
-        monitorListener = listener;
+    public void setMonitorSelectedListener(ScreenSelectedCallback listener) {
+        screenSelectedCallback = listener;
     }
 
     public void setLayoutChangeHandler(CodecCustomLayoutHelper handler) {
@@ -84,14 +83,14 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
 
         isCurrentlyScaling = true;
         layoutDirector.scaleView(view, scale);
-        if (view instanceof FrameView && layoutChangeHandler != null)
+        if (layoutChangeHandler != null)
             layoutChangeHandler.frameHasChanged((FrameView) view);
     }
 
     @Override
     public void onSingleTap(View view) {
-        if (monitorListener!= null)
-            monitorListener.monitorSelected();
+        if (screenSelectedCallback != null)
+            screenSelectedCallback.monitorSelected();
     }
 
     @Override
@@ -118,7 +117,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
     @Override
     public void onEndTouch() {
         if (isCurrentlyScaling) {
-            layoutDirector.updatePositions();
+            layoutDirector.updatePositions(); // snap back to layouts when scaling stops
             isCurrentlyScaling = false;
         }
     }
@@ -139,6 +138,7 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
         }
         else if (action == DragEvent.ACTION_DRAG_ENTERED) {
             //Debug.debug("drag enterd on %d, %d", dragStartX, dragStartY);
+            highlightDraggableView(dropTarget);
         }
         else if (action == DragEvent.ACTION_DRAG_LOCATION) {
             // Detect drag started (use this instead of entered, to get coordinates in the correct coord system (!?)
@@ -151,6 +151,10 @@ public class ScreenPresenter implements MultiTouchListener.MultiTouchCallback, V
             //Debug.debug("move drag on %d, %d", (int) dragEvent.getX(), (int) dragEvent.getY());
         }
         return true;
+    }
+
+    private void highlightDraggableView(View view) {
+
     }
 
     private void addTrayElementToScreen(TrayButton button) {

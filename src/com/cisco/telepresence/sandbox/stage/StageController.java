@@ -2,8 +2,6 @@ package com.cisco.telepresence.sandbox.stage;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Point;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +17,6 @@ import com.cisco.telepresence.sandbox.stage.layout.PredefineLayoutDirector;
 import com.cisco.telepresence.sandbox.stage.model.Frame;
 import com.cisco.telepresence.sandbox.stage.model.Screen;
 import com.cisco.telepresence.sandbox.stage.topmenu.TopMenuHandler;
-import com.cisco.telepresence.sandbox.stage.util.Animations;
-import com.cisco.telepresence.sandbox.stage.util.Debug;
 import com.cisco.telepresence.sandbox.stage.view.ScreenPresenter;
 import com.cisco.telepresence.sandbox.stage.view.ScreenView;
 import com.cisco.telepresence.sandbox.stage.view.TrayButton;
@@ -126,7 +122,7 @@ public class StageController implements  View.OnTouchListener {
                 new PredefineLayoutDirector(screenView);
 
         screenPresenter = new ScreenPresenter(screenView, director);
-        screenPresenter.setMonitorSelectedListener(new ScreenPresenter.MonitorListener() {
+        screenPresenter.setMonitorSelectedListener(new ScreenPresenter.ScreenSelectedCallback() {
             @Override
             public void monitorSelected() {
                 stageNavigator.focusOnView(monitorIndex);
